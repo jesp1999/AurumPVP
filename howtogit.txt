@@ -1,0 +1,18 @@
+git status (check changes that have been made to your local stuff)
+
+git add <file> (adds a file to the changes to be committed)
+
+git commit -m <message> (commits a change to the repo)
+
+git push origin main (pushes local commits to the website we're working on)
+
+git pull (pulls changes on the website to your local version)
+
+git help <command> (pulls up help)
+
+nano <file> (opens a text editor for this file)
+
+
+if u make changes: make changes -> git status -> git add <files changed> -> git commit -m "message" -> git push origin main -> git status
+
+to check for changes: git pull -> resolve merge conflicts manually if necessary

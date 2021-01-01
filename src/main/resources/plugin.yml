@@ -1,17 +1,12 @@
 name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.0.0.1
+version: 0.0.1.0
 api-version: 1.16
 
 author: Dhumina, Julian, Ian
 commands:
-   location:
-      description: Gives location
-      usage: /location
-      permission: aurumpvp.location
-      permission-message: You don't have aurumpvp.location
    kit:
       description: Gives player a kit
-      usage: /kit <kit name>
+      usage: /kit [player] <kit name>
       permission: aurumpvp.kit
       permission-message: You don't have aurumpvp.kit

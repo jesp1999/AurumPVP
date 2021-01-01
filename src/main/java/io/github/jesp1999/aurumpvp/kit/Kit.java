@@ -3,8 +3,6 @@ package io.github.jesp1999.aurumpvp.kit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -121,8 +119,8 @@ public class Kit {
      * @param category KitCategory enum identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(KitName type, KitCategory category, Map<String, ItemStack> inventory) {
-        this.name = type;
+    public Kit(KitName name, KitCategory category, Map<String, ItemStack> inventory) {
+        this.name = name;
         this.inventory = inventory;
     }
     

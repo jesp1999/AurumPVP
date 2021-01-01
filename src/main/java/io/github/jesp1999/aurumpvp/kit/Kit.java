@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
  *
  */
 public class Kit {
-    private final KitType type;
+    private final KitName name;
     private final Map<String, Optional<ItemStack>> inventory;
     
     
@@ -26,56 +26,56 @@ public class Kit {
     public static void initializeKits() {
         // TODO eventually convert this to reading of a config file
         // TODO initialize the inventories for each kit
-        Kit.ninja = new Kit(KitType.NINJA, KitCategory.RANGED, Map.of());
-        Kit.bomber = new Kit(KitType.BOMBER, KitCategory.RANGED, Map.of());
-        Kit.tactician = new Kit(KitType.TACTICIAN, KitCategory.RANGED, Map.of());
-        Kit.hunter = new Kit(KitType.HUNTER, KitCategory.RANGED, Map.of());
-        Kit.sniper = new Kit(KitType.SNIPER, KitCategory.RANGED, Map.of());
-        Kit.archer = new Kit(KitType.ARCHER, KitCategory.RANGED, Map.of());
-        Kit.assassin = new Kit(KitType.ASSASSIN, KitCategory.RANGED, Map.of());
-        Kit.scout = new Kit(KitType.SCOUT, KitCategory.RANGED, Map.of());
-        Kit.medic = new Kit(KitType.MEDIC, KitCategory.RANGED, Map.of());
-        Kit.marauder = new Kit(KitType.MARAUDER, KitCategory.RANGED, Map.of());
-        Kit.knight = new Kit(KitType.KNIGHT, KitCategory.PHYSICAL, Map.of());
-        Kit.berserker = new Kit(KitType.BERSERKER, KitCategory.PHYSICAL, Map.of());
-        Kit.nymph = new Kit(KitType.NYMPH, KitCategory.PHYSICAL, Map.of());
-        Kit.challenger = new Kit(KitType.CHALLENGER, KitCategory.PHYSICAL, Map.of());
-        Kit.miner = new Kit(KitType.MINER, KitCategory.PHYSICAL, Map.of());
-        Kit.reaper = new Kit(KitType.REAPER, KitCategory.PHYSICAL, Map.of());
-        Kit.mage = new Kit(KitType.MAGE, KitCategory.MAGIC, Map.of());
-        Kit.shapeshifter = new Kit(KitType.SHAPESHIFTER, KitCategory.MAGIC, Map.of());
-        Kit.pyromancer = new Kit(KitType.PYROMANCER, KitCategory.MAGIC, Map.of());
-        Kit.necromancer = new Kit(KitType.NECROMANCER, KitCategory.MAGIC, Map.of());
-        Kit.spirit = new Kit(KitType.SPIRIT, KitCategory.MAGIC, Map.of());
-        Kit.druid = new Kit(KitType.DRUID, KitCategory.MAGIC, Map.of());
-        Kit.witchDoctor = new Kit(KitType.WITCH_DOCTOR, KitCategory.MAGIC, Map.of());
-        Kit.warper = new Kit(KitType.WARPER, KitCategory.MAGIC, Map.of());
-        Kit.phaser = new Kit(KitType.PHASER, KitCategory.MAGIC, Map.of());
-        Kit.paladin = new Kit(KitType.PALADIN, KitCategory.TANK, Map.of());
-        Kit.protector = new Kit(KitType.PROTECTOR, KitCategory.TANK, Map.of());
-        Kit.blacksmith = new Kit(KitType.BLACKSMITH, KitCategory.TANK, Map.of());
-        Kit.machinist = new Kit(KitType.MACHINIST, KitCategory.TANK, Map.of());
-        Kit.angel = new Kit(KitType.ANGEL, KitCategory.TANK, Map.of());
-        Kit.frostWarden = new Kit(KitType.FROST_WARDEN, KitCategory.TANK, Map.of());
+        Kit.ninja = new Kit(KitName.NINJA, KitCategory.RANGED, Map.of());
+        Kit.bomber = new Kit(KitName.BOMBER, KitCategory.RANGED, Map.of());
+        Kit.tactician = new Kit(KitName.TACTICIAN, KitCategory.RANGED, Map.of());
+        Kit.hunter = new Kit(KitName.HUNTER, KitCategory.RANGED, Map.of());
+        Kit.sniper = new Kit(KitName.SNIPER, KitCategory.RANGED, Map.of());
+        Kit.archer = new Kit(KitName.ARCHER, KitCategory.RANGED, Map.of());
+        Kit.assassin = new Kit(KitName.ASSASSIN, KitCategory.RANGED, Map.of());
+        Kit.scout = new Kit(KitName.SCOUT, KitCategory.RANGED, Map.of());
+        Kit.medic = new Kit(KitName.MEDIC, KitCategory.RANGED, Map.of());
+        Kit.marauder = new Kit(KitName.MARAUDER, KitCategory.RANGED, Map.of());
+        Kit.knight = new Kit(KitName.KNIGHT, KitCategory.PHYSICAL, Map.of());
+        Kit.berserker = new Kit(KitName.BERSERKER, KitCategory.PHYSICAL, Map.of());
+        Kit.nymph = new Kit(KitName.NYMPH, KitCategory.PHYSICAL, Map.of());
+        Kit.challenger = new Kit(KitName.CHALLENGER, KitCategory.PHYSICAL, Map.of());
+        Kit.miner = new Kit(KitName.MINER, KitCategory.PHYSICAL, Map.of());
+        Kit.reaper = new Kit(KitName.REAPER, KitCategory.PHYSICAL, Map.of());
+        Kit.mage = new Kit(KitName.MAGE, KitCategory.MAGIC, Map.of());
+        Kit.shapeshifter = new Kit(KitName.SHAPESHIFTER, KitCategory.MAGIC, Map.of());
+        Kit.pyromancer = new Kit(KitName.PYROMANCER, KitCategory.MAGIC, Map.of());
+        Kit.necromancer = new Kit(KitName.NECROMANCER, KitCategory.MAGIC, Map.of());
+        Kit.spirit = new Kit(KitName.SPIRIT, KitCategory.MAGIC, Map.of());
+        Kit.druid = new Kit(KitName.DRUID, KitCategory.MAGIC, Map.of());
+        Kit.witchDoctor = new Kit(KitName.WITCH_DOCTOR, KitCategory.MAGIC, Map.of());
+        Kit.warper = new Kit(KitName.WARPER, KitCategory.MAGIC, Map.of());
+        Kit.phaser = new Kit(KitName.PHASER, KitCategory.MAGIC, Map.of());
+        Kit.paladin = new Kit(KitName.PALADIN, KitCategory.TANK, Map.of());
+        Kit.protector = new Kit(KitName.PROTECTOR, KitCategory.TANK, Map.of());
+        Kit.blacksmith = new Kit(KitName.BLACKSMITH, KitCategory.TANK, Map.of());
+        Kit.machinist = new Kit(KitName.MACHINIST, KitCategory.TANK, Map.of());
+        Kit.angel = new Kit(KitName.ANGEL, KitCategory.TANK, Map.of());
+        Kit.frostWarden = new Kit(KitName.FROST_WARDEN, KitCategory.TANK, Map.of());
     }
     
     /**
      * Constructor for a Kit based on identifiers and the respective inventory arrangement
-     * @param type the KitType enum identifier for this kit
+     * @param name the KitName enum identifier for this kit
      * @param category KitCategory enum identifier for this kit
      * @param inventory map of the inventory slot names to Optional<ItemStack>, Optional.empty() if no item in the slot
      */
-    public Kit(KitType type, KitCategory category, Map<String, Optional<ItemStack>> inventory) {
-        this.type = type;
+    public Kit(KitName name, KitCategory category, Map<String, Optional<ItemStack>> inventory) {
+        this.name = name;
         this.inventory = inventory;
     }
     
     /**
-     * Retrieves the name of the kit as a KitType enum
-     * @return the KitType enum identifier for this kit
+     * Retrieves the name of the kit as a KitName enum
+     * @return the KitName enum identifier for this kit
      */
-    public KitType getType() {
-        return this.type;
+    public KitName getName() {
+        return this.name;
     }
 
     /**

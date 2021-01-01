@@ -1,7 +1,7 @@
 package io.github.jesp1999.aurumpvp.kit;
 
 
-public enum KitType {
+public enum KitName {
 //ranged
 NINJA, BOMBER, TACTICIAN, HUNTER, SNIPER, ARCHER, ASSASSIN, SCOUT, MEDIC, MARAUDER,
 //physical

@@ -91,6 +91,10 @@ public class JSONHandler extends JSONConstants{
 			final JSONArray kitsJSON = (JSONArray) new JSONParser().parse(reader);
 			for(int i = 0; i < kitsJSON.size(); i++) {
 			    final JSONObject kitJSON = (JSONObject)kitsJSON.get(i);
+			    if (!(kitJSON.containsKey(KIT_NAME) || kitJSON.containsKey(KIT_CATEGORY) || kitJSON.containsKey(KIT_INVENTORY))) {
+			        //TODO provide a more meaningful error message here
+			        continue;
+			    }
 			    final String kitName = (String)kitJSON.get(KIT_NAME);
 			    final String kitCategory = (String)kitJSON.get(KIT_CATEGORY);
 			    final JSONArray inventoryJSON = (JSONArray)kitJSON.get(KIT_INVENTORY);

@@ -98,7 +98,8 @@ public class JSONHandler extends JSONConstants{
 //					ArrayList<String> itemCustomEffects = new ArrayList<String>();
 //					for(int k = 0; k < JSONCustomEffects.size(); k++) {
 //						itemCustomEffects.add((String)JSONCustomEffects.get(k));
-//					}					
+//					}
+					item.setItemMeta(itemMeta);
 					kitInventory.put(itemSlot,item);
 				}
 				Kit kit = new Kit(kitName, kitCategory, kitInventory);

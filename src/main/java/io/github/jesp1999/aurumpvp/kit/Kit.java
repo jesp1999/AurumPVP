@@ -18,6 +18,7 @@ import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
  */
 public class Kit {
     private final String name;
+    private final String category;
     private final Map<String, ItemStack> inventory;
     
     private static final Map<String, Integer> inventorySlots;
@@ -103,7 +104,25 @@ public class Kit {
      */
     public Kit(String name, String category, Map<String, ItemStack> inventory) {
         this.name = name;
+        this.category = category;
         this.inventory = inventory;
+    }
+    
+    /**
+     * Retrieves the category of the kit as a String
+     * @return the category String identifier for this kit
+     */
+    public String getCategory() {
+        return this.category;
+    }
+    
+    /**
+     * Retrieves the inventory of the kit as
+     * a Map of inventory slot names to ItemStacks
+     * @return Inventory associated with this kit
+     */
+    public Map<String,ItemStack> getInventory() {
+    	return this.inventory;
     }
     
     /**

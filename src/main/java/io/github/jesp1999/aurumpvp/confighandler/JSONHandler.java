@@ -75,8 +75,15 @@ public class JSONHandler extends JSONConstants{
         enchantmentMap.put("soul_speed", Enchantment.SOUL_SPEED);
 	}
 	
+	private static Map<Material, String> materialMap = new HashMap<>();
+	static {
+		materialMap.put(Material.ACACIA_BOAT, "acacia_boat");
+		//TODO put in the rest of the materials
+	}
+	
 	/**
 	 * Takes JSON file of kits and translates it to Java objects
+	 * @param kitConfigFile The kits.json config file
 	 * @return List of valid kits with all
 	 */
 	public static Map<String, Kit> importKits(File kitConfigFile) {
@@ -230,6 +237,60 @@ public class JSONHandler extends JSONConstants{
 		    e.printStackTrace();
 		}
 		return kits;
+	}
+	
+	/**
+	 * Takes Kit.kits and exports them to JSON
+	 * @param kitConfigFile The kits.json config file
+	 * @param kits Map of all kits with their names
+	 */
+	public static void exportKits(File kitConfigFile, Map<String, Kit> kits) {
+		JSONArray JSONKits = new JSONArray();
+		for(Map.Entry<String, Kit> entry : kits.entrySet()) {
+			JSONKits.add(getKitJSON(entry.getValue()));
+		}
+		
+		try(FileWriter file = new FileWriter(kitConfigFile)) {
+			
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Gets proper JSONObject for a given kit
+	 * @param kit Kit to convert to JSON
+	 * @return JSONObject representation of kit
+	 */
+	public static JSONObject getKitJSON(Kit kit) {
+		JSONObject kitDetails = new JSONObject();
+		kitDetails.put(KIT_NAME, kit.getName());
+		kitDetails.put(KIT_CATEGORY, kit.getCategory());
+		JSONArray inventory = new JSONArray();
+		for(Map.Entry<String, ItemStack> entry : kit.getInventory().entrySet()) {
+			inventory.add(getItemJSON(entry.getKey(),entry.getValue()));
+		}
+		kitDetails.put(KIT_INVENTORY, inventory);
+		return kitDetails;
+	}
+	
+	/**
+	 * Gets proper JSONObject for a given item
+	 * @param slot
+	 * @param item
+	 * @return
+	 */
+	public static JSONObject getItemJSON(String slot, ItemStack item) {
+		JSONObject itemDetails = new JSONObject();
+		ItemMeta itemMeta = item.getItemMeta();
+		itemDetails.put(ITEM_SLOT, slot);
+		itemDetails.put(ITEM_NAME, item.getType().to);
+		itemDetails.put(ITEM_DISPLAY_NAME, itemMeta.getDisplayName());
+//		itemDetails.put(ITEM_DAMAGE, );
+//		itemDetails.put(ITEM_COLOR, );
+//		itemDetails.put(ITEM_AMOUNT, );
+		
+		return itemDetails;
 	}
 	
 	/**

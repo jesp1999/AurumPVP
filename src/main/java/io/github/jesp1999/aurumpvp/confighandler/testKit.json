@@ -7,7 +7,7 @@
         "slot": "armor.head",
         "itemName": "diamond_helmet",
         "displayName": "Epic Helmet",
-        "durability": -1,
+        "damage": -1,
         "amount": 1,
         "enchantments": [
             "protection-1"

@@ -76,6 +76,17 @@ public class AurumPVP extends JavaPlugin {
 			countDown(Integer.parseInt(args[0]));
 			return true;
 		}
+		if(cmd.getName().equalsIgnoreCase("reloadkits") || cmd.getName().equalsIgnoreCase("rk")) {
+			File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
+			getLogger().info("Attempting to reload kits");
+			final boolean kitsInitialized = Kit.initializeKits(kitConfigFile);
+			if (kitsInitialized) {
+			    //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
+			    getLogger().info("Kits reloaded!");
+			} else {
+			    getLogger().info("Kit reload unsuccessful, see error details above.");
+			}
+		}
 		if (cmd.getName().equalsIgnoreCase("kit")) { // The kit command gives the player a kit
 			if (!(sender instanceof Player)) {
 				sender.sendMessage("This command can only be run by a player.");

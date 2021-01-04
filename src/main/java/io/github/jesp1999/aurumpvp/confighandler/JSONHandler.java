@@ -1,7 +1,6 @@
 package io.github.jesp1999.aurumpvp.confighandler;
 
 import io.github.jesp1999.aurumpvp.kit.Kit;
-import io.github.jesp1999.aurumpvp.kit.KitCategory;
 import io.github.jesp1999.aurumpvp.map.MapInfo;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Used to load from JSON config files
@@ -44,7 +42,10 @@ public class JSONHandler extends JSONConstants{
 		//TODO input verification
 		try {
 			if(!kitConfigFile.exists()) {
-				new FileWriter(kitConfigFile).flush();
+				kitConfigFile.getParentFile().mkdirs();
+				FileWriter writer = new FileWriter(kitConfigFile);
+				writer.flush();
+				writer.close();
 				return kits;
 			}
 			FileReader reader = new FileReader(kitConfigFile);
@@ -52,7 +53,7 @@ public class JSONHandler extends JSONConstants{
 			for(int i = 0; i < JSONKits.size(); i++) {
 				JSONObject JSONKit = (JSONObject)JSONKits.get(i);
 				String kitName = (String)JSONKit.get(KIT_NAME);
-				KitCategory kitCategory = (KitCategory)JSONKit.get(KIT_CATEGORY);
+				String kitCategory = (String)JSONKit.get(KIT_CATEGORY);
 				JSONArray JSONInventory = (JSONArray)JSONKit.get(KIT_INVENTORY);
 				Map<String, ItemStack> kitInventory = new HashMap<>();
 				for(int j = 0; j < JSONInventory.size(); j++) {
@@ -60,10 +61,13 @@ public class JSONHandler extends JSONConstants{
 					String itemSlot = (String)JSONItem.get(ITEM_SLOT);
 					String itemName = (String)JSONItem.get(ITEM_NAME);
 					String itemDisplayName = (String)JSONItem.get(ITEM_DISPLAY_NAME);
-					int itemDurability = (int)JSONItem.get(ITEM_DURABILITY);
-//					int itemColor = (int)JSONItem.get(ITEM_COLOR);
+					long itemDbLong = (long)JSONItem.get(ITEM_DURABILITY);
+					int itemDurability = Math.toIntExact(itemDbLong);
+//					long itemColorLong = (long)JSONItem.get(ITEM_COLOR);
+//					int itemColor = Math.toIntExact(itemColorLong);
 					//TODO add item color functionality
-					int itemAmount = (int)JSONItem.get(ITEM_AMOUNT);
+					long itemAmountLong = (long)JSONItem.get(ITEM_AMOUNT);
+					int itemAmount = Math.toIntExact(itemAmountLong);
 
 					Material itemMaterial = Material.matchMaterial(itemName);
 					ItemStack item = new ItemStack(itemMaterial, itemAmount);

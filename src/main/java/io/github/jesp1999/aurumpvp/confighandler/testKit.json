@@ -1,16 +1,16 @@
 [
   {
-    "kitName": "Test",
-    "kitCategory": "RANGE">,
+    "kitName": "test",
+    "kitCategory": "RANGED",
     "inventory": [
       {
-        "slot": "armor.helmet",
+        "slot": "armor.head",
         "itemName": "diamond_helmet",
         "displayName": "Epic Helmet",
         "durability": -1,
         "amount": 1,
         "enchantments": [
-            "protection"
+            "protection-1"
         ]
         "lore": [
             "This is an epic diamond helmet",

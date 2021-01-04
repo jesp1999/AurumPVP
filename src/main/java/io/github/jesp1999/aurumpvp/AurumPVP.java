@@ -8,8 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 
 import io.github.jesp1999.aurumpvp.kit.Kit;
 import io.github.jesp1999.aurumpvp.confighandler.JSONConstants;
@@ -42,7 +40,7 @@ public class AurumPVP extends JavaPlugin {
 			public void run() {
 				if (counter >= 0) {
 					Bukkit.broadcastMessage(Integer.toString(counter));
-					counter++;
+					counter--;
 				}
 			}
 		}, 0L, 20L);

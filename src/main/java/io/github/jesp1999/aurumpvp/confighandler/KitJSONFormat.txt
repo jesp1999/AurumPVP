@@ -4,7 +4,7 @@
     "kitCategory": <String; [PHYSICAL,RANGE,TANK,MAGIC]>,
     "inventory": <ItemObjectList> [
       {
-        "slot": <String; [armor.{helmet,chestplate,leggings,boots},hotbar.{0-8},weapon.offhand,inventory.{0-26}]>,
+        "slot": <String; [armor.{head,chest,leg,feet},hotbar.{0-8},weapon.offhand,inventory.{0-26}]>,
         "itemName": <String; [name of minecraft item]>,
         "displayName": <String>,
         "durability": <int; [-1(Unbreakable) or any positive integer]>,

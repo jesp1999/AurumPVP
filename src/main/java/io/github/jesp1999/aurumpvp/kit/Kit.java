@@ -67,8 +67,8 @@ public class Kit {
     
     static {
         kits = new HashMap<>();
-        kits.put("ninja", new Kit("Ninja", KitCategory.RANGED, Map.of()));
-        kits.put("bomber", new Kit("Bomber", KitCategory.RANGED, Map.of()));
+        kits.put("ninja", new Kit("Ninja", "RANGED", Map.of()));
+        kits.put("bomber", new Kit("Bomber", "RANGED", Map.of()));
         // TODO add the rest
     }
     
@@ -81,7 +81,7 @@ public class Kit {
      * Initializes the base kits as static members of Kit
      */
     public static void initializeKits(File kitConfigFile) {
-    	JSONHandler.importKits(kitConfigFile);
+    	Kit.kits = JSONHandler.importKits(kitConfigFile);
         // TODO eventually convert this to reading of a config file
         // TODO initialize the inventories for each kit
         
@@ -122,11 +122,11 @@ public class Kit {
     
     /**
      * Constructor for a Kit based on identifiers and the respective inventory arrangement
-     * @param name the KitName enum identifier for this kit
-     * @param category KitCategory enum identifier for this kit
+     * @param name the KitName String identifier for this kit
+     * @param category KitCategory String identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(String name, KitCategory category, Map<String, ItemStack> inventory) {
+    public Kit(String name, String category, Map<String, ItemStack> inventory) {
         this.name = name;
         this.inventory = inventory;
     }

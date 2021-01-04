@@ -4,13 +4,15 @@
     "kitCategory": <String; [PHYSICAL,RANGE,TANK,MAGIC]>,
     "inventory": <ItemObjectList> [
       {
-        "slot": <String; [armor.{helmet,chestplate,leggings,boots},inv.{offhand,0-35}]>,
+        "slot": <String; [armor.{helmet,chestplate,leggings,boots},hotbar.{0-8},weapon.offhand,inventory.{0-26}]>,
         "itemName": <String; [name of minecraft item]>,
+        "displayName": <String>,
         "durability": <int; [-1(Unbreakable) or any positive integer]>,
-        "enchantments": <String; [comma separated enchantments]>,
         "color": <int; https://www.digminecraft.com/lists/dyed_armor_color_list_pc.php>,
-        "lore": <String>,
-        "customEffects": <String; [valid custom effect tag]>
+        "amount": <int; number in stack>,
+        "enchantments": <String List; List of Enchantments ["enchantment_name-level_number"]> [],
+        "lore": <String List; Lines of lore> [],
+        "customEffects": <String List; List of custom effects> []
       }
     ]
   }

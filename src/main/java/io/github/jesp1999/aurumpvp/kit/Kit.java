@@ -1,5 +1,6 @@
 package io.github.jesp1999.aurumpvp.kit;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -7,6 +8,8 @@ import java.util.Map.Entry;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 
 /**
  * Class representing the information associated with a kit pvp kit
@@ -77,7 +80,8 @@ public class Kit {
     /**
      * Initializes the base kits as static members of Kit
      */
-    public static void initializeKits() {
+    public static void initializeKits(File kitConfigFile) {
+    	JSONHandler.importKits(kitConfigFile);
         // TODO eventually convert this to reading of a config file
         // TODO initialize the inventories for each kit
         Kit.ninja = new Kit(KitName.NINJA, KitCategory.RANGED, Map.of());

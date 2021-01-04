@@ -33,6 +33,7 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class JSONHandler extends JSONConstants{
 	
+	//TODO make a revEnchantmentMap
 	private static Map<String, Enchantment> enchantmentMap = new HashMap<>(); 
 	static {
 		enchantmentMap.put("protection", Enchantment.PROTECTION_ENVIRONMENTAL);
@@ -283,12 +284,36 @@ public class JSONHandler extends JSONConstants{
 	public static JSONObject getItemJSON(String slot, ItemStack item) {
 		JSONObject itemDetails = new JSONObject();
 		ItemMeta itemMeta = item.getItemMeta();
+		
 		itemDetails.put(ITEM_SLOT, slot);
-		itemDetails.put(ITEM_NAME, item.getType().to);
+		itemDetails.put(ITEM_NAME, materialMap.get(item.getType()));
 		itemDetails.put(ITEM_DISPLAY_NAME, itemMeta.getDisplayName());
-//		itemDetails.put(ITEM_DAMAGE, );
-//		itemDetails.put(ITEM_COLOR, );
-//		itemDetails.put(ITEM_AMOUNT, );
+		
+		if(itemMeta.isUnbreakable()) {
+			itemDetails.put(ITEM_DAMAGE, -1);
+		} else {
+			itemDetails.put(ITEM_DAMAGE, ((Damageable)itemMeta).getDamage());
+		}
+		
+		if(itemMeta instanceof LeatherArmorMeta) {
+			itemDetails.put(ITEM_COLOR, ((LeatherArmorMeta)itemMeta).getColor());
+        } else if(itemMeta instanceof PotionMeta) {
+        	itemDetails.put(ITEM_COLOR, ((PotionMeta)itemMeta).getColor());
+        }
+		
+		itemDetails.put(ITEM_AMOUNT, item.getAmount());
+		
+		JSONArray enchantments = new JSONArray();
+		for(Map.Entry<Enchantment, Integer> entry : itemMeta.getEnchants().entrySet()) {
+			String enchString = revEnchantmentMap.get(entry.getKey()) + "-" + entry.getValue();
+			enchantments.add(enchString);
+		}
+		itemDetails.put(ITEM_ENCHANTMENTS, enchantments);
+		
+		JSONArray lore = new JSONArray();
+		for(String line : itemMeta.getLore()) {
+			lore.add(line);
+		}
 		
 		return itemDetails;
 	}

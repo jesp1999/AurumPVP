@@ -98,17 +98,33 @@ public class JSONHandler extends JSONConstants{
 				for(int j = 0; j < inventoryJSON.size(); j++) {
 				    final JSONObject itemJSON = (JSONObject)inventoryJSON.get(j);
 				    
+				    if (!(itemJSON.containsKey(ITEM_SLOT) || itemJSON.containsKey(ITEM_NAME))) {
+				        //TODO notify the console that the item is missing a name or slot
+				        continue;
+				    }
+				    
 				    final String itemSlot = (String)itemJSON.get(ITEM_SLOT);
 				    final String itemName = (String)itemJSON.get(ITEM_NAME);
-                    final int itemAmount = Math.toIntExact((long)itemJSON.get(ITEM_AMOUNT));
-				    final String itemDisplayName = (String)itemJSON.get(ITEM_DISPLAY_NAME);
                     final Material itemMaterial = Material.matchMaterial(itemName);
-                    final ItemStack item = new ItemStack(itemMaterial, itemAmount);
-                    final ItemMeta itemMeta = item.getItemMeta();
-                    itemMeta.setDisplayName(itemDisplayName);
                     
-				    final boolean damageSpecified = itemJSON.containsKey(ITEM_DAMAGE);
-				    if (damageSpecified) {
+                    final boolean amountSpecified = itemJSON.containsKey(ITEM_AMOUNT);
+                    final ItemStack item;
+                    if (amountSpecified) {
+                        final int itemAmount = Math.toIntExact((long)itemJSON.get(ITEM_AMOUNT));
+                        item = new ItemStack(itemMaterial, itemAmount);
+                    } else {
+                        item = new ItemStack(itemMaterial);
+                    }
+                    
+                    final ItemMeta itemMeta = item.getItemMeta();
+                    
+				    final String itemDisplayName;
+				    if (itemJSON.containsKey(ITEM_DISPLAY_NAME)) {
+	                    itemDisplayName = (String)itemJSON.get(ITEM_DISPLAY_NAME);
+	                    itemMeta.setDisplayName(itemDisplayName);
+				    }
+                    
+				    if (itemJSON.containsKey(ITEM_DAMAGE)) {
 	                    final int itemDamage = Math.toIntExact((long)itemJSON.get(ITEM_DAMAGE));
 	                    if(itemDamage == -1) {
 	                        itemMeta.setUnbreakable(true);
@@ -116,24 +132,32 @@ public class JSONHandler extends JSONConstants{
 	                        ((Damageable)itemMeta).setDamage(itemDamage);
 	                    }
 				    }
-					final int itemColor = Math.toIntExact((long)itemJSON.get(ITEM_COLOR));
 
-                    if (itemMeta instanceof LeatherArmorMeta)
-                        ((LeatherArmorMeta) itemMeta).setColor(Color.fromRGB(itemColor));
-					final JSONArray JSONEnchantments = (JSONArray)itemJSON.get(ITEM_ENCHANTMENTS);
-					for(int k = 0; k < JSONEnchantments.size(); k++) {
-					    final String enchantString = (String)JSONEnchantments.get(k);
-					    final String[] itemEnchant = enchantString.split("-");						
-						itemMeta.addEnchant(enchantmentMap.get(itemEnchant[0]), Integer.parseInt(itemEnchant[1]), true);
+				    if (itemJSON.containsKey(ITEM_COLOR)) {
+				        final int itemColor = Math.toIntExact((long)itemJSON.get(ITEM_COLOR));
+                        if(itemMeta instanceof LeatherArmorMeta)
+                            ((LeatherArmorMeta)itemMeta).setColor(Color.fromRGB(itemColor));
+				    }
+                    
+				    if (itemJSON.containsKey(ITEM_ENCHANTMENTS)) {
+				        final JSONArray JSONEnchantments = (JSONArray)itemJSON.get(ITEM_ENCHANTMENTS);
+	                    for(int k = 0; k < JSONEnchantments.size(); k++) {
+	                        final String enchantString = (String)JSONEnchantments.get(k);
+	                        final String[] itemEnchant = enchantString.split("-");                      
+	                        itemMeta.addEnchant(enchantmentMap.get(itemEnchant[0]), Integer.parseInt(itemEnchant[1]), true);
+	                    }
+				    }
+					
+					if (itemJSON.containsKey(ITEM_LORE)) {
+	                    final JSONArray JSONLore = (JSONArray)itemJSON.get(ITEM_LORE);
+	                    final ArrayList<String> itemLore = new ArrayList<String>();
+	                    for(int k = 0; k < JSONLore.size(); k++) {
+	                        itemLore.add((String)JSONLore.get(k));
+	                    }
+	                    itemMeta.setLore(itemLore);
 					}
 					
-					final JSONArray JSONLore = (JSONArray)itemJSON.get(ITEM_LORE);
-					final ArrayList<String> itemLore = new ArrayList<String>();
-					for(int k = 0; k < JSONLore.size(); k++) {
-						itemLore.add((String)JSONLore.get(k));
-					}
-					itemMeta.setLore(itemLore);
-					
+					//TODO add custom effects input validation
 //					JSONArray JSONCustomEffects = (JSONArray)JSONItem.get(ITEM_CUSTOM_EFFECTS);
 //					ArrayList<String> itemCustomEffects = new ArrayList<String>();
 //					for(int k = 0; k < JSONCustomEffects.size(); k++) {

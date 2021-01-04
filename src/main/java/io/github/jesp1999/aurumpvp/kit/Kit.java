@@ -14,7 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
  *
  */
 public class Kit {
-    private final KitName name;
+    private final String name;
     private final Map<String, ItemStack> inventory;
     
     private static final Map<String, Integer> inventorySlots;
@@ -64,15 +64,15 @@ public class Kit {
     
     static {
         kits = new HashMap<>();
-        kits.put("ninja", new Kit(KitName.NINJA, KitCategory.RANGED, Map.of()));
-        kits.put("bomber", new Kit(KitName.BOMBER, KitCategory.RANGED, Map.of()));
+        kits.put("ninja", new Kit("Ninja", KitCategory.RANGED, Map.of()));
+        kits.put("bomber", new Kit("Bomber", KitCategory.RANGED, Map.of()));
         // TODO add the rest
     }
     
-    public static Kit ninja, bomber, tactician, hunter, sniper, archer, assassin, scout, medic, marauder;
-    public static Kit knight, berserker, nymph, challenger, miner, reaper;
-    public static Kit mage, shapeshifter, pyromancer, necromancer, spirit, druid, witchDoctor, warper, phaser;
-    public static Kit paladin, protector, blacksmith, machinist, angel, frostWarden;
+//    public static Kit ninja, bomber, tactician, hunter, sniper, archer, assassin, scout, medic, marauder;
+//    public static Kit knight, berserker, nymph, challenger, miner, reaper;
+//    public static Kit mage, shapeshifter, pyromancer, necromancer, spirit, druid, witchDoctor, warper, phaser;
+//    public static Kit paladin, protector, blacksmith, machinist, angel, frostWarden;
     
     /**
      * Initializes the base kits as static members of Kit
@@ -80,37 +80,40 @@ public class Kit {
     public static void initializeKits() {
         // TODO eventually convert this to reading of a config file
         // TODO initialize the inventories for each kit
-        Kit.ninja = new Kit(KitName.NINJA, KitCategory.RANGED, Map.of());
-        Kit.bomber = new Kit(KitName.BOMBER, KitCategory.RANGED, Map.of());
-        Kit.tactician = new Kit(KitName.TACTICIAN, KitCategory.RANGED, Map.of());
-        Kit.hunter = new Kit(KitName.HUNTER, KitCategory.RANGED, Map.of());
-        Kit.sniper = new Kit(KitName.SNIPER, KitCategory.RANGED, Map.of());
-        Kit.archer = new Kit(KitName.ARCHER, KitCategory.RANGED, Map.of());
-        Kit.assassin = new Kit(KitName.ASSASSIN, KitCategory.RANGED, Map.of());
-        Kit.scout = new Kit(KitName.SCOUT, KitCategory.RANGED, Map.of());
-        Kit.medic = new Kit(KitName.MEDIC, KitCategory.RANGED, Map.of());
-        Kit.marauder = new Kit(KitName.MARAUDER, KitCategory.RANGED, Map.of());
-        Kit.knight = new Kit(KitName.KNIGHT, KitCategory.PHYSICAL, Map.of());
-        Kit.berserker = new Kit(KitName.BERSERKER, KitCategory.PHYSICAL, Map.of());
-        Kit.nymph = new Kit(KitName.NYMPH, KitCategory.PHYSICAL, Map.of());
-        Kit.challenger = new Kit(KitName.CHALLENGER, KitCategory.PHYSICAL, Map.of());
-        Kit.miner = new Kit(KitName.MINER, KitCategory.PHYSICAL, Map.of());
-        Kit.reaper = new Kit(KitName.REAPER, KitCategory.PHYSICAL, Map.of());
-        Kit.mage = new Kit(KitName.MAGE, KitCategory.MAGIC, Map.of());
-        Kit.shapeshifter = new Kit(KitName.SHAPESHIFTER, KitCategory.MAGIC, Map.of());
-        Kit.pyromancer = new Kit(KitName.PYROMANCER, KitCategory.MAGIC, Map.of());
-        Kit.necromancer = new Kit(KitName.NECROMANCER, KitCategory.MAGIC, Map.of());
-        Kit.spirit = new Kit(KitName.SPIRIT, KitCategory.MAGIC, Map.of());
-        Kit.druid = new Kit(KitName.DRUID, KitCategory.MAGIC, Map.of());
-        Kit.witchDoctor = new Kit(KitName.WITCH_DOCTOR, KitCategory.MAGIC, Map.of());
-        Kit.warper = new Kit(KitName.WARPER, KitCategory.MAGIC, Map.of());
-        Kit.phaser = new Kit(KitName.PHASER, KitCategory.MAGIC, Map.of());
-        Kit.paladin = new Kit(KitName.PALADIN, KitCategory.TANK, Map.of());
-        Kit.protector = new Kit(KitName.PROTECTOR, KitCategory.TANK, Map.of());
-        Kit.blacksmith = new Kit(KitName.BLACKSMITH, KitCategory.TANK, Map.of());
-        Kit.machinist = new Kit(KitName.MACHINIST, KitCategory.TANK, Map.of());
-        Kit.angel = new Kit(KitName.ANGEL, KitCategory.TANK, Map.of());
-        Kit.frostWarden = new Kit(KitName.FROST_WARDEN, KitCategory.TANK, Map.of());
+        
+        
+        
+//        Kit.ninja = new Kit(KitName.NINJA, KitCategory.RANGED, Map.of());
+//        Kit.bomber = new Kit(KitName.BOMBER, KitCategory.RANGED, Map.of());
+//        Kit.tactician = new Kit(KitName.TACTICIAN, KitCategory.RANGED, Map.of());
+//        Kit.hunter = new Kit(KitName.HUNTER, KitCategory.RANGED, Map.of());
+//        Kit.sniper = new Kit(KitName.SNIPER, KitCategory.RANGED, Map.of());
+//        Kit.archer = new Kit(KitName.ARCHER, KitCategory.RANGED, Map.of());
+//        Kit.assassin = new Kit(KitName.ASSASSIN, KitCategory.RANGED, Map.of());
+//        Kit.scout = new Kit(KitName.SCOUT, KitCategory.RANGED, Map.of());
+//        Kit.medic = new Kit(KitName.MEDIC, KitCategory.RANGED, Map.of());
+//        Kit.marauder = new Kit(KitName.MARAUDER, KitCategory.RANGED, Map.of());
+//        Kit.knight = new Kit(KitName.KNIGHT, KitCategory.PHYSICAL, Map.of());
+//        Kit.berserker = new Kit(KitName.BERSERKER, KitCategory.PHYSICAL, Map.of());
+//        Kit.nymph = new Kit(KitName.NYMPH, KitCategory.PHYSICAL, Map.of());
+//        Kit.challenger = new Kit(KitName.CHALLENGER, KitCategory.PHYSICAL, Map.of());
+//        Kit.miner = new Kit(KitName.MINER, KitCategory.PHYSICAL, Map.of());
+//        Kit.reaper = new Kit(KitName.REAPER, KitCategory.PHYSICAL, Map.of());
+//        Kit.mage = new Kit(KitName.MAGE, KitCategory.MAGIC, Map.of());
+//        Kit.shapeshifter = new Kit(KitName.SHAPESHIFTER, KitCategory.MAGIC, Map.of());
+//        Kit.pyromancer = new Kit(KitName.PYROMANCER, KitCategory.MAGIC, Map.of());
+//        Kit.necromancer = new Kit(KitName.NECROMANCER, KitCategory.MAGIC, Map.of());
+//        Kit.spirit = new Kit(KitName.SPIRIT, KitCategory.MAGIC, Map.of());
+//        Kit.druid = new Kit(KitName.DRUID, KitCategory.MAGIC, Map.of());
+//        Kit.witchDoctor = new Kit(KitName.WITCH_DOCTOR, KitCategory.MAGIC, Map.of());
+//        Kit.warper = new Kit(KitName.WARPER, KitCategory.MAGIC, Map.of());
+//        Kit.phaser = new Kit(KitName.PHASER, KitCategory.MAGIC, Map.of());
+//        Kit.paladin = new Kit(KitName.PALADIN, KitCategory.TANK, Map.of());
+//        Kit.protector = new Kit(KitName.PROTECTOR, KitCategory.TANK, Map.of());
+//        Kit.blacksmith = new Kit(KitName.BLACKSMITH, KitCategory.TANK, Map.of());
+//        Kit.machinist = new Kit(KitName.MACHINIST, KitCategory.TANK, Map.of());
+//        Kit.angel = new Kit(KitName.ANGEL, KitCategory.TANK, Map.of());
+//        Kit.frostWarden = new Kit(KitName.FROST_WARDEN, KitCategory.TANK, Map.of());
     }
     
     /**
@@ -119,7 +122,7 @@ public class Kit {
      * @param category KitCategory enum identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(KitName name, KitCategory category, Map<String, ItemStack> inventory) {
+    public Kit(String name, KitCategory category, Map<String, ItemStack> inventory) {
         this.name = name;
         this.inventory = inventory;
     }
@@ -128,7 +131,7 @@ public class Kit {
      * Retrieves the name of the kit as a KitName enum
      * @return the KitName enum identifier for this kit
      */
-    public KitName getName() {
+    public String getName() {
         return this.name;
     }
 
@@ -179,6 +182,9 @@ public class Kit {
      * @return true if equipping action performed successfully, false otherwise
      */
     public boolean equipKit(Player player) {
+        if (player == null) {
+            return false;
+        }
         final PlayerInventory playerInventory = player.getInventory();
         for (final Entry<String, Integer> inventoryEntry : Kit.inventorySlots.entrySet()) {
             playerInventory.setItem(inventoryEntry.getValue(), this.inventory.getOrDefault(inventoryEntry.getKey(), null));

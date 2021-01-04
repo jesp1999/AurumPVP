@@ -22,6 +22,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * Used to load from JSON config files
@@ -148,35 +151,68 @@ public class JSONHandler extends JSONConstants{
 				    //TODO allow for non-numeric colors like "purple", "blue" etc
 				    if (itemJSON.containsKey(ITEM_COLOR)) {
 				        final int itemColor = Math.toIntExact((long)itemJSON.get(ITEM_COLOR));
-                        if(itemMeta instanceof LeatherArmorMeta)
+                        if(itemMeta instanceof LeatherArmorMeta) {
                             ((LeatherArmorMeta)itemMeta).setColor(Color.fromRGB(itemColor));
+                        } else if(itemMeta instanceof PotionMeta) {
+                            ((PotionMeta)itemMeta).setColor(Color.fromRGB(itemColor));
+                        }
 				    }
                     
 				    //TODO add individual enchantment validation
 				    if (itemJSON.containsKey(ITEM_ENCHANTMENTS)) {
-				        final JSONArray JSONEnchantments = (JSONArray)itemJSON.get(ITEM_ENCHANTMENTS);
-	                    for(int k = 0; k < JSONEnchantments.size(); k++) {
-	                        final String enchantString = (String)JSONEnchantments.get(k);
+				        final JSONArray enchantmentsJSON = (JSONArray)itemJSON.get(ITEM_ENCHANTMENTS);
+	                    for(int k = 0; k < enchantmentsJSON.size(); k++) {
+	                        final String enchantString = (String)enchantmentsJSON.get(k);
 	                        final String[] itemEnchant = enchantString.split("-");
-	                        itemMeta.addEnchant(enchantmentMap.get(itemEnchant[0]), Integer.parseInt(itemEnchant[1]), true);
+	                        itemMeta.addEnchant(enchantmentMap.get(itemEnchant[0]), Integer.parseInt(itemEnchant[1]), EXCEED_ENCHANTMENT_LEVEL_CAP);
 	                    }
 				    }
 					
 					if (itemJSON.containsKey(ITEM_LORE)) {
-	                    final JSONArray JSONLore = (JSONArray)itemJSON.get(ITEM_LORE);
+	                    final JSONArray loreJSON = (JSONArray)itemJSON.get(ITEM_LORE);
 	                    final ArrayList<String> itemLore = new ArrayList<String>();
-	                    for(int k = 0; k < JSONLore.size(); k++) {
-	                        itemLore.add((String)JSONLore.get(k));
+	                    for(int k = 0; k < loreJSON.size(); k++) {
+	                        itemLore.add((String)loreJSON.get(k));
 	                    }
 	                    itemMeta.setLore(itemLore);
 					}
 					
 					//TODO add custom effects input validation
-//					JSONArray JSONCustomEffects = (JSONArray)JSONItem.get(ITEM_CUSTOM_EFFECTS);
-//					ArrayList<String> itemCustomEffects = new ArrayList<String>();
-//					for(int k = 0; k < JSONCustomEffects.size(); k++) {
-//						itemCustomEffects.add((String)JSONCustomEffects.get(k));
-//					}
+					if (itemJSON.containsKey(ITEM_CUSTOM_EFFECTS)) {
+    					final JSONArray customEffectsJSON = (JSONArray)itemJSON.get(ITEM_CUSTOM_EFFECTS);
+    					for(int k = 0; k < customEffectsJSON.size(); k++) {
+    					    final String customEffectString = (String)customEffectsJSON.get(k);
+    					    final String[] customEffectSplit = customEffectString.split("-");
+    					    final String customEffectTypeString = customEffectSplit[0];
+                            final PotionEffectType customEffectType = PotionEffectType.getByName(customEffectTypeString);
+                            if (customEffectType == null) {
+                                //TODO generate a console message logging this
+                                continue;
+                            }
+    					    final int customEffectDuration = Integer.parseInt(customEffectSplit[1]);
+    					    final int customEffectAmplifier = Integer.parseInt(customEffectSplit[2]);
+    					    
+    					    // Generate the item custom effect meta based on which parameters are specified in the JSON
+                            final PotionEffect itemCustomEffect;
+    					    if (customEffectSplit.length > 3) {
+    					        final boolean customEffectAmbient = customEffectSplit[3].equals("1"); // ambient is default false, assume false unless "1" specified to override
+    					        if (customEffectSplit.length > 4) {
+                                    final boolean customEffectParticle = customEffectSplit[4].equals("0"); // particles is default true, assume true unless "0" specified to override
+    					            if (customEffectSplit.length > 5) {
+    	                                final boolean customEffectIcon = customEffectSplit[5].equals("0"); // icon is default true, assume true unless "0" specified to override
+    					                itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient, customEffectParticle, customEffectIcon);
+    					            } else {
+                                        itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient, customEffectParticle);
+    					            }
+    					        } else {
+                                    itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient);
+    					        }
+    					    } else {
+                                itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier);
+    					    }
+    					    ((PotionMeta) itemMeta).addCustomEffect(itemCustomEffect, OVERWRITE_SAME_EFFECT_TYPE);
+    					}
+					}
                     item.setItemMeta(itemMeta);
 					kitInventory.put(itemSlot,item);
 				}

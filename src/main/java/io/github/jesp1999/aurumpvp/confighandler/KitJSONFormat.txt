@@ -12,7 +12,12 @@
         "amount": <optional int; number in stack>,
         "enchantments": <optional String List; List of Enchantments ["enchantment_name-level_number"]> [],
         "lore": <optional String List; Lines of lore> [],
-        "customEffects": <optional String List; List of custom effects> []
+        "customEffects": <optional String List; List of custom effects> ["potion_name-duration-amplifier",
+                                                                         "potion_name-duration-amplifier-ambient",
+                                                                         "potion_name-duration-amplifier-ambient-particles",
+                                                                         "potion_name-duration-amplifier-ambient-particles-icon]
+                                                                         ambient, particles, and icon are "0" or "1" for false or true, respectively
+                                                                         any of the above formats are valid
       }
     ]
   }

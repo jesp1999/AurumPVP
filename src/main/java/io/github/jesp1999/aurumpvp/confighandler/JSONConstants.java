@@ -18,4 +18,6 @@ public abstract class JSONConstants {
 	protected static final String ITEM_ENCHANTMENTS = "enchantments";
 	protected static final String ITEM_LORE = "lore";
 	protected static final String ITEM_CUSTOM_EFFECTS = "customEffects";
+    protected static final boolean OVERWRITE_SAME_EFFECT_TYPE = true;
+    protected static final boolean EXCEED_ENCHANTMENT_LEVEL_CAP = true;
 }

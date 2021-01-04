@@ -16,23 +16,28 @@ public class AurumPVP extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// TODO Insert logic to be performed when the plugin is enabled
 		getLogger().info("onEnable has been invoked!");
 		File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
 		getLogger().info("Attempting to initialize kits from AurumPVP/kits.json ...");
-		boolean kitsInitialized = Kit.initializeKits(kitConfigFile);
+		final boolean kitsInitialized = Kit.initializeKits(kitConfigFile);
 		if (kitsInitialized) {
 		    //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
 		    getLogger().info("Kits initialized successfully!");
 		} else {
-		    getLogger().info("Kit initialization unsuccessful, see error details above");
+		    getLogger().info("Kit initialization unsuccessful, see error details above.");
 		}
 	}
 
 	@Override
 	public void onDisable() {
-		// TODO Insert logic to be performed when the plugin is disabled
 		getLogger().info("onDisable has been invoked!");
+		getLogger().info("Attempting to reset in-game kits");
+		final boolean kitsReset = Kit.resetKits();
+		if (kitsReset) {
+		    getLogger().info("Kits reset successfully!");
+		} else {
+		    getLogger().info("Kit resetting unsuccessful, see error details above.");
+		}
 	}
 
 	/**
@@ -105,15 +110,6 @@ public class AurumPVP extends JavaPlugin {
 						sender.sendMessage("This kit does not exist!");
 						return false;
 					}
-					// TODO remove this code and put in respective place
-					// ItemStack ironSwordItem = new ItemStack(Material.IRON_SWORD);
-					// ItemMeta ironSwordMeta = ironSwordItem.getItemMeta();
-					// ironSwordMeta.setDisplayName("Ninjato");
-					// List<String> ironSwordLore = new ArrayList<String>();
-					// ironSwordLore.add("Traditional sword of the ninja");
-					// ironSwordMeta.setLore(ironSwordLore);
-					// player.getInventory().addItem(ironSwordItem);
-					// player.sendMessage("You are now a Ninja");
 				} else {
 					sender.sendMessage("Incorrect format! Do this instead: /kit [player] <kit name>");
 					return false;

@@ -70,7 +70,7 @@ public class JSONHandler extends JSONConstants{
         enchantmentMap.put("mending", Enchantment.MENDING);
         enchantmentMap.put("curse_of_vanishing", Enchantment.VANISHING_CURSE);
         enchantmentMap.put("soul_speed", Enchantment.SOUL_SPEED);
-	};
+	}
 	
 	/**
 	 * Takes JSON file of kits and translates it to Java objects
@@ -78,9 +78,10 @@ public class JSONHandler extends JSONConstants{
 	 */
 	public static Map<String, Kit> importKits(File kitConfigFile) {
 		final Map<String, Kit> kits = new HashMap<>();
-		//TODO input verification
 		try {
 			if(!kitConfigFile.exists()) {
+			    //TODO print message indicating that the kits file is being initialized
+			    //TODO populate the kits file with a default kit list maybe?
 				kitConfigFile.getParentFile().mkdirs();
 				final FileWriter writer = new FileWriter(kitConfigFile);
 				writer.flush();
@@ -98,7 +99,7 @@ public class JSONHandler extends JSONConstants{
 			    final String kitName = (String)kitJSON.get(KIT_NAME);
 			    final String kitCategory = (String)kitJSON.get(KIT_CATEGORY);
 			    final JSONArray inventoryJSON = (JSONArray)kitJSON.get(KIT_INVENTORY);
-				Map<String, ItemStack> kitInventory = new HashMap<>();
+				final Map<String, ItemStack> kitInventory = new HashMap<>();
 				for(int j = 0; j < inventoryJSON.size(); j++) {
 				    final JSONObject itemJSON = (JSONObject)inventoryJSON.get(j);
 				    
@@ -156,7 +157,7 @@ public class JSONHandler extends JSONConstants{
 				        final JSONArray JSONEnchantments = (JSONArray)itemJSON.get(ITEM_ENCHANTMENTS);
 	                    for(int k = 0; k < JSONEnchantments.size(); k++) {
 	                        final String enchantString = (String)JSONEnchantments.get(k);
-	                        final String[] itemEnchant = enchantString.split("-");                      
+	                        final String[] itemEnchant = enchantString.split("-");
 	                        itemMeta.addEnchant(enchantmentMap.get(itemEnchant[0]), Integer.parseInt(itemEnchant[1]), true);
 	                    }
 				    }

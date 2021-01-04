@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.jesp1999</groupId>
   <artifactId>AurumPVP</artifactId>
-  <version>0.1.0.3</version>
+  <version>0.1.0.4</version>
   <build>
     <plugins>
         <plugin>

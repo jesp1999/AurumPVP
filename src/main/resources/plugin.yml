@@ -2,3 +2,9 @@ name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
 version: 0.0.0.1
 api-version: 1.16
+commands:
+   countdown:
+      description: This is a demo command.
+      usage: /countdown <numberOfSeconds>
+      permission: AurumPVP.countdown
+      permission-message: You don't have AurumPVP.countdown

@@ -40,7 +40,7 @@ public class AurumPVP extends JavaPlugin {
 					counter++;
 				}
 			}
-		}, 0L, (long) (20 * 1.5));
+		}, 0L, 20L);
 	}
 
 	@Override

@@ -1,10 +1,17 @@
 name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.0.0.1
+version: 0.0.1.0
 api-version: 1.16
+
+author: Dhumina, Julian, Ian
 commands:
-   countdown:
-      description: This is a demo command.
-      usage: /countdown <numberOfSeconds>
-      permission: AurumPVP.countdown
-      permission-message: You don't have AurumPVP.countdown
+  kit:
+    description: Gives player a kit
+    usage: /kit [player] <kit name>
+    permission: aurumpvp.kit
+    permission-message: You don't have aurumpvp.kit
+  countdown:
+    description: This is a demo command.
+    usage: /countdown <numberOfSeconds>
+    permission: AurumPVP.countdown
+    permission-message: You don't have AurumPVP.countdown

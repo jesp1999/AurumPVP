@@ -6,13 +6,13 @@
       {
         "slot": <String; [armor.{head,chest,leg,feet},hotbar.{0-8},weapon.offhand,inventory.{0-26}]>,
         "itemName": <String; [name of minecraft item]>,
-        "displayName": <String>,
-        "damage": <int; [-1(Unbreakable) or any positive integer]>,
-        "color": <int; https://www.digminecraft.com/lists/dyed_armor_color_list_pc.php>,
-        "amount": <int; number in stack>,
-        "enchantments": <String List; List of Enchantments ["enchantment_name-level_number"]> [],
-        "lore": <String List; Lines of lore> [],
-        "customEffects": <String List; List of custom effects> []
+        "displayName": <optional String>,
+        "damage": <optional int; [-1(Unbreakable) or any positive integer]>,
+        "color": <optional int; https://www.digminecraft.com/lists/dyed_armor_color_list_pc.php>,
+        "amount": <optional int; number in stack>,
+        "enchantments": <optional String List; List of Enchantments ["enchantment_name-level_number"]> [],
+        "lore": <optional String List; Lines of lore> [],
+        "customEffects": <optional String List; List of custom effects> []
       }
     ]
   }

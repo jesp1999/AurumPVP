@@ -19,7 +19,14 @@ public class AurumPVP extends JavaPlugin {
 		// TODO Insert logic to be performed when the plugin is enabled
 		getLogger().info("onEnable has been invoked!");
 		File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
-		Kit.initializeKits(kitConfigFile);
+		getLogger().info("Attempting to initialize kits from AurumPVP/kits.json ...");
+		boolean kitsInitialized = Kit.initializeKits(kitConfigFile);
+		if (kitsInitialized) {
+		    //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
+		    getLogger().info("Kits initialized successfully!");
+		} else {
+		    getLogger().info("Kit initialization unsuccessful, see error details above");
+		}
 	}
 
 	@Override

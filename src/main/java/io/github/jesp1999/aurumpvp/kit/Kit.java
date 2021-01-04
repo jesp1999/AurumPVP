@@ -72,45 +72,27 @@ public class Kit {
     
     /**
      * Initializes the base kits as static members of Kit
+     * @param kitConfigFile
+     * @return boolean representing initialization success
      */
-    public static void initializeKits(File kitConfigFile) {
-    	Kit.kits = JSONHandler.importKits(kitConfigFile);
-        // TODO eventually convert this to reading of a config file
-        // TODO initialize the inventories for each kit
-        
-        
-        
-//        Kit.ninja = new Kit(KitName.NINJA, KitCategory.RANGED, Map.of());
-//        Kit.bomber = new Kit(KitName.BOMBER, KitCategory.RANGED, Map.of());
-//        Kit.tactician = new Kit(KitName.TACTICIAN, KitCategory.RANGED, Map.of());
-//        Kit.hunter = new Kit(KitName.HUNTER, KitCategory.RANGED, Map.of());
-//        Kit.sniper = new Kit(KitName.SNIPER, KitCategory.RANGED, Map.of());
-//        Kit.archer = new Kit(KitName.ARCHER, KitCategory.RANGED, Map.of());
-//        Kit.assassin = new Kit(KitName.ASSASSIN, KitCategory.RANGED, Map.of());
-//        Kit.scout = new Kit(KitName.SCOUT, KitCategory.RANGED, Map.of());
-//        Kit.medic = new Kit(KitName.MEDIC, KitCategory.RANGED, Map.of());
-//        Kit.marauder = new Kit(KitName.MARAUDER, KitCategory.RANGED, Map.of());
-//        Kit.knight = new Kit(KitName.KNIGHT, KitCategory.PHYSICAL, Map.of());
-//        Kit.berserker = new Kit(KitName.BERSERKER, KitCategory.PHYSICAL, Map.of());
-//        Kit.nymph = new Kit(KitName.NYMPH, KitCategory.PHYSICAL, Map.of());
-//        Kit.challenger = new Kit(KitName.CHALLENGER, KitCategory.PHYSICAL, Map.of());
-//        Kit.miner = new Kit(KitName.MINER, KitCategory.PHYSICAL, Map.of());
-//        Kit.reaper = new Kit(KitName.REAPER, KitCategory.PHYSICAL, Map.of());
-//        Kit.mage = new Kit(KitName.MAGE, KitCategory.MAGIC, Map.of());
-//        Kit.shapeshifter = new Kit(KitName.SHAPESHIFTER, KitCategory.MAGIC, Map.of());
-//        Kit.pyromancer = new Kit(KitName.PYROMANCER, KitCategory.MAGIC, Map.of());
-//        Kit.necromancer = new Kit(KitName.NECROMANCER, KitCategory.MAGIC, Map.of());
-//        Kit.spirit = new Kit(KitName.SPIRIT, KitCategory.MAGIC, Map.of());
-//        Kit.druid = new Kit(KitName.DRUID, KitCategory.MAGIC, Map.of());
-//        Kit.witchDoctor = new Kit(KitName.WITCH_DOCTOR, KitCategory.MAGIC, Map.of());
-//        Kit.warper = new Kit(KitName.WARPER, KitCategory.MAGIC, Map.of());
-//        Kit.phaser = new Kit(KitName.PHASER, KitCategory.MAGIC, Map.of());
-//        Kit.paladin = new Kit(KitName.PALADIN, KitCategory.TANK, Map.of());
-//        Kit.protector = new Kit(KitName.PROTECTOR, KitCategory.TANK, Map.of());
-//        Kit.blacksmith = new Kit(KitName.BLACKSMITH, KitCategory.TANK, Map.of());
-//        Kit.machinist = new Kit(KitName.MACHINIST, KitCategory.TANK, Map.of());
-//        Kit.angel = new Kit(KitName.ANGEL, KitCategory.TANK, Map.of());
-//        Kit.frostWarden = new Kit(KitName.FROST_WARDEN, KitCategory.TANK, Map.of());
+    public static boolean initializeKits(File kitConfigFile) {
+        try {
+            Kit.kits = JSONHandler.importKits(kitConfigFile);
+            return true;
+        } catch (Exception e) {
+            //TODO make this more readable
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * Resets the static kits mapping
+     * @return boolean representing reset success
+     */
+    public static boolean resetKits() {
+        Kit.kits = new HashMap<>();
+        return true;
     }
     
     /**
@@ -125,8 +107,8 @@ public class Kit {
     }
     
     /**
-     * Retrieves the name of the kit as a KitName enum
-     * @return the KitName enum identifier for this kit
+     * Retrieves the name of the kit as a String
+     * @return the name String identifier for this kit
      */
     public String getName() {
         return this.name;

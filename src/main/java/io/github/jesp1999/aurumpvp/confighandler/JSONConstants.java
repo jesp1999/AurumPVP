@@ -5,7 +5,7 @@ package io.github.jesp1999.aurumpvp.confighandler;
  * @author Ian McDowell
  */
 public abstract class JSONConstants {
-	public static final String KIT_FILENAME = "testKit.json";
+	public static final String KIT_FILENAME = "kits.json";
 	protected static final String KIT_NAME = "kitName";
 	protected static final String KIT_CATEGORY = "kitCategory";
 	protected static final String KIT_INVENTORY = "inventory";

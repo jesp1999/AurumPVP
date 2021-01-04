@@ -106,9 +106,14 @@ public class JSONHandler extends JSONConstants{
 				    final String itemSlot = (String)itemJSON.get(ITEM_SLOT);
 				    final String itemName = (String)itemJSON.get(ITEM_NAME);
                     final Material itemMaterial = Material.matchMaterial(itemName);
+                    if (itemMaterial == null) {
+                        //TODO notify the console that the item is not a valid minecraft item
+                        continue;
+                    }
                     
                     final boolean amountSpecified = itemJSON.containsKey(ITEM_AMOUNT);
                     final ItemStack item;
+                    //TODO input validation on amount being numeric
                     if (amountSpecified) {
                         final int itemAmount = Math.toIntExact((long)itemJSON.get(ITEM_AMOUNT));
                         item = new ItemStack(itemMaterial, itemAmount);
@@ -124,6 +129,7 @@ public class JSONHandler extends JSONConstants{
 	                    itemMeta.setDisplayName(itemDisplayName);
 				    }
                     
+				    //TODO input validation on damage being numeric
 				    if (itemJSON.containsKey(ITEM_DAMAGE)) {
 	                    final int itemDamage = Math.toIntExact((long)itemJSON.get(ITEM_DAMAGE));
 	                    if(itemDamage == -1) {
@@ -133,12 +139,15 @@ public class JSONHandler extends JSONConstants{
 	                    }
 				    }
 
+				    //TODO input validation on color being numeric
+				    //TODO allow for non-numeric colors like "purple", "blue" etc
 				    if (itemJSON.containsKey(ITEM_COLOR)) {
 				        final int itemColor = Math.toIntExact((long)itemJSON.get(ITEM_COLOR));
                         if(itemMeta instanceof LeatherArmorMeta)
                             ((LeatherArmorMeta)itemMeta).setColor(Color.fromRGB(itemColor));
 				    }
                     
+				    //TODO add individual enchantment validation
 				    if (itemJSON.containsKey(ITEM_ENCHANTMENTS)) {
 				        final JSONArray JSONEnchantments = (JSONArray)itemJSON.get(ITEM_ENCHANTMENTS);
 	                    for(int k = 0; k < JSONEnchantments.size(); k++) {
@@ -170,10 +179,13 @@ public class JSONHandler extends JSONConstants{
 				kits.put(kitName, kit);
 			}			
 		} catch(IOException e) {
+		    //TODO print custom error message with more details
 		    e.printStackTrace();
 		} catch (ParseException e) {
+            //TODO print custom error message with more details
 			e.printStackTrace();
 		} catch (ArithmeticException e) {
+            //TODO print custom error message with more details
 		    e.printStackTrace();
 		}
 		return kits;

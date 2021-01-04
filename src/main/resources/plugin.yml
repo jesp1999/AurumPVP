@@ -1,6 +1,6 @@
 name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.1.1.0
+version: 0.1.1.2
 api-version: 1.16
 
 author: Dhumina, Julian, Ian
@@ -13,5 +13,15 @@ commands:
   countdown:
     description: This is a demo command.
     usage: /countdown <numberOfSeconds>
-    permission: AurumPVP.countdown
-    permission-message: You don't have AurumPVP.countdown
+    permission: aurumpvp.countdown
+    permission-message: You don't have aurumpvp.countdown
+  reloadkits:
+    description: Reloads kits.
+    usage: /reloadkits
+    permission: aurumpvp.reload
+    permission-message: You can't reload!
+  rk:
+    description: Reloads kits.
+    usage: /rk
+    permission: aurumpvp.reload
+    permission-message: You can't reload!

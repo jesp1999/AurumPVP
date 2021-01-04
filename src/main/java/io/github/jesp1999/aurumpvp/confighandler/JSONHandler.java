@@ -30,7 +30,42 @@ public class JSONHandler extends JSONConstants{
 	private static Map<String, Enchantment> enchantmentMap = new HashMap<>(); 
 	static {
 		enchantmentMap.put("protection", Enchantment.PROTECTION_ENVIRONMENTAL);
-		//TODO add all enchantments
+        enchantmentMap.put("fire_protection", Enchantment.PROTECTION_FIRE);
+        enchantmentMap.put("feather_falling", Enchantment.PROTECTION_FALL);
+        enchantmentMap.put("blast_protection", Enchantment.PROTECTION_EXPLOSIONS);
+        enchantmentMap.put("projectile_protection", Enchantment.PROTECTION_PROJECTILE);
+        enchantmentMap.put("respiration", Enchantment.OXYGEN);
+        enchantmentMap.put("aqua_affinity", Enchantment.WATER_WORKER);
+        enchantmentMap.put("thorns", Enchantment.THORNS);
+        enchantmentMap.put("depth_strider", Enchantment.DEPTH_STRIDER);
+        enchantmentMap.put("frost_walker", Enchantment.FROST_WALKER);
+        enchantmentMap.put("curse_of_binding", Enchantment.BINDING_CURSE);
+        enchantmentMap.put("sharpness", Enchantment.DAMAGE_ALL);
+        enchantmentMap.put("smite", Enchantment.DAMAGE_UNDEAD);
+        enchantmentMap.put("bane_of_arthropods", Enchantment.DAMAGE_ARTHROPODS);
+        enchantmentMap.put("knockback", Enchantment.KNOCKBACK);
+        enchantmentMap.put("fire_aspect", Enchantment.FIRE_ASPECT);
+        enchantmentMap.put("looting", Enchantment.LOOT_BONUS_MOBS);
+        enchantmentMap.put("sweeping_edge", Enchantment.SWEEPING_EDGE);
+        enchantmentMap.put("efficiency", Enchantment.DIG_SPEED);
+        enchantmentMap.put("silk_touch", Enchantment.SILK_TOUCH);
+        enchantmentMap.put("unbreaking", Enchantment.DURABILITY);
+        enchantmentMap.put("power", Enchantment.ARROW_DAMAGE);
+        enchantmentMap.put("punch", Enchantment.ARROW_KNOCKBACK);
+        enchantmentMap.put("flame", Enchantment.ARROW_FIRE);
+        enchantmentMap.put("infinity", Enchantment.ARROW_INFINITE);
+        enchantmentMap.put("luck_of_the_sea", Enchantment.LUCK);
+        enchantmentMap.put("lure", Enchantment.LURE);
+        enchantmentMap.put("loyalty", Enchantment.LOYALTY);
+        enchantmentMap.put("impaling", Enchantment.IMPALING);
+        enchantmentMap.put("riptide", Enchantment.RIPTIDE);
+        enchantmentMap.put("channeling", Enchantment.CHANNELING);
+        enchantmentMap.put("multishot", Enchantment.MULTISHOT);
+        enchantmentMap.put("quick_charge", Enchantment.QUICK_CHARGE);
+        enchantmentMap.put("piercing", Enchantment.PIERCING);
+        enchantmentMap.put("mending", Enchantment.MENDING);
+        enchantmentMap.put("curse_of_vanishing", Enchantment.VANISHING_CURSE);
+        enchantmentMap.put("soul_speed", Enchantment.SOUL_SPEED);
 	};
 	
 	/**
@@ -105,8 +140,12 @@ public class JSONHandler extends JSONConstants{
 				Kit kit = new Kit(kitName, kitCategory, kitInventory);
 				kits.put(kitName, kit);
 			}			
-		} catch(IOException | ParseException e) {
+		} catch(IOException e) {
+		    e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
+		} catch (ArithmeticException e) {
+		    e.printStackTrace();
 		}
 		return kits;
 	}

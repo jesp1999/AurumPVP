@@ -12,7 +12,7 @@ public abstract class JSONConstants {
 	protected static final String ITEM_SLOT = "slot";
 	protected static final String ITEM_NAME = "itemName";
 	protected static final String ITEM_DISPLAY_NAME = "displayName";
-	protected static final String ITEM_DURABILITY = "durability";
+	protected static final String ITEM_DAMAGE = "damage";
 	protected static final String ITEM_COLOR = "color";
 	protected static final String ITEM_AMOUNT = "amount";
 	protected static final String ITEM_ENCHANTMENTS = "enchantments";

@@ -65,13 +65,6 @@ public class Kit {
 
     public static Map<String, Kit> kits;
     
-    static {
-        kits = new HashMap<>();
-        kits.put("ninja", new Kit("Ninja", "RANGED", Map.of()));
-        kits.put("bomber", new Kit("Bomber", "RANGED", Map.of()));
-        // TODO add the rest
-    }
-    
 //    public static Kit ninja, bomber, tactician, hunter, sniper, archer, assassin, scout, medic, marauder;
 //    public static Kit knight, berserker, nymph, challenger, miner, reaper;
 //    public static Kit mage, shapeshifter, pyromancer, necromancer, spirit, druid, witchDoctor, warper, phaser;

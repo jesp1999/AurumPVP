@@ -7,7 +7,7 @@
         "slot": <String; [armor.{head,chest,leg,feet},hotbar.{0-8},weapon.offhand,inventory.{0-26}]>,
         "itemName": <String; [name of minecraft item]>,
         "displayName": <String>,
-        "durability": <int; [-1(Unbreakable) or any positive integer]>,
+        "damage": <int; [-1(Unbreakable) or any positive integer]>,
         "color": <int; https://www.digminecraft.com/lists/dyed_armor_color_list_pc.php>,
         "amount": <int; number in stack>,
         "enchantments": <String List; List of Enchantments ["enchantment_name-level_number"]> [],

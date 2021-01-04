@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -33,7 +34,8 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class JSONHandler extends JSONConstants{
 	
-	private static Map<String, Enchantment> enchantmentMap = new HashMap<>(); 
+	private static final Map<String, Enchantment> enchantmentMap = new HashMap<>(); 
+	private static final Map<Enchantment, String> reverseEnchantmentMap = new HashMap<>();
 	static {
 		enchantmentMap.put("protection", Enchantment.PROTECTION_ENVIRONMENTAL);
         enchantmentMap.put("fire_protection", Enchantment.PROTECTION_FIRE);
@@ -73,6 +75,80 @@ public class JSONHandler extends JSONConstants{
         enchantmentMap.put("mending", Enchantment.MENDING);
         enchantmentMap.put("curse_of_vanishing", Enchantment.VANISHING_CURSE);
         enchantmentMap.put("soul_speed", Enchantment.SOUL_SPEED);
+        for (Map.Entry<String, Enchantment> entry : enchantmentMap.entrySet()) {
+            reverseEnchantmentMap.put(entry.getValue(), entry.getKey());
+        }
+	}
+
+    private static final Map<String, PotionEffectType> potionEffectMap = new HashMap<>();
+    private static final Map<PotionEffectType, String> reversePotionEffectMap = new HashMap<>();
+	static {
+        potionEffectMap.put("speed", PotionEffectType.SPEED);
+        potionEffectMap.put("slowness", PotionEffectType.SLOW);
+        potionEffectMap.put("haste", PotionEffectType.FAST_DIGGING);
+        potionEffectMap.put("mining_fatigue", PotionEffectType.SLOW_DIGGING);
+        potionEffectMap.put("strength", PotionEffectType.INCREASE_DAMAGE);
+        potionEffectMap.put("instant_health", PotionEffectType.HEAL);
+        potionEffectMap.put("instant_damage", PotionEffectType.HARM);
+        potionEffectMap.put("jump_boost", PotionEffectType.JUMP);
+        potionEffectMap.put("nausea", PotionEffectType.CONFUSION);
+        potionEffectMap.put("regeneration", PotionEffectType.REGENERATION);
+        potionEffectMap.put("resistance", PotionEffectType.DAMAGE_RESISTANCE);
+        potionEffectMap.put("fire_resistance", PotionEffectType.FIRE_RESISTANCE);
+        potionEffectMap.put("water_breathing", PotionEffectType.WATER_BREATHING);
+        potionEffectMap.put("invisibility", PotionEffectType.INVISIBILITY);
+        potionEffectMap.put("blindness", PotionEffectType.BLINDNESS);
+        potionEffectMap.put("night_vision", PotionEffectType.NIGHT_VISION);
+        potionEffectMap.put("hunger", PotionEffectType.HUNGER);
+        potionEffectMap.put("weakness", PotionEffectType.WEAKNESS);
+        potionEffectMap.put("poison", PotionEffectType.POISON);
+        potionEffectMap.put("wither", PotionEffectType.WITHER);
+        potionEffectMap.put("health_boost", PotionEffectType.HEALTH_BOOST);
+        potionEffectMap.put("absorption", PotionEffectType.ABSORPTION);
+        potionEffectMap.put("saturation", PotionEffectType.SATURATION);
+        potionEffectMap.put("glowing", PotionEffectType.GLOWING);
+        potionEffectMap.put("levitation", PotionEffectType.LEVITATION);
+        potionEffectMap.put("luck", PotionEffectType.LUCK);
+        potionEffectMap.put("bad_luck", PotionEffectType.UNLUCK);
+        potionEffectMap.put("slow_falling", PotionEffectType.SLOW_FALLING);
+        potionEffectMap.put("conduit_power", PotionEffectType.CONDUIT_POWER);
+        potionEffectMap.put("dolphins_grace", PotionEffectType.DOLPHINS_GRACE);
+        potionEffectMap.put("bad_omen", PotionEffectType.BAD_OMEN);
+        potionEffectMap.put("hero_of_the_village", PotionEffectType.HERO_OF_THE_VILLAGE);
+        for (Map.Entry<String, PotionEffectType> entry : potionEffectMap.entrySet()) {
+            reversePotionEffectMap.put(entry.getValue(), entry.getKey());
+        }
+	}
+	
+	/**
+	 * 
+	 * @param unformattedText
+	 * @return
+	 */
+	private static String formatText(String unformattedText) {
+	    String formattedText = unformattedText.replace("&0", ChatColor.BLACK+"");
+        formattedText = formattedText.replace("&1", ChatColor.DARK_BLUE+"");
+        formattedText = formattedText.replace("&2", ChatColor.DARK_GREEN+"");
+        formattedText = formattedText.replace("&3", ChatColor.DARK_AQUA+"");
+        formattedText = formattedText.replace("&4", ChatColor.DARK_RED+"");
+        formattedText = formattedText.replace("&5", ChatColor.DARK_PURPLE+"");
+        formattedText = formattedText.replace("&6", ChatColor.GOLD+"");
+        formattedText = formattedText.replace("&7", ChatColor.GRAY+"");
+        formattedText = formattedText.replace("&8", ChatColor.DARK_GRAY+"");
+        formattedText = formattedText.replace("&9", ChatColor.BLUE+"");
+        formattedText = formattedText.replace("&a", ChatColor.GREEN+"");
+        formattedText = formattedText.replace("&b", ChatColor.AQUA+"");
+        formattedText = formattedText.replace("&c", ChatColor.RED+"");
+        formattedText = formattedText.replace("&d", ChatColor.LIGHT_PURPLE+"");
+        formattedText = formattedText.replace("&e", ChatColor.YELLOW+"");
+        formattedText = formattedText.replace("&f", ChatColor.WHITE+"");
+        formattedText = formattedText.replace("&k", ChatColor.MAGIC+"");
+        formattedText = formattedText.replace("&l", ChatColor.BOLD+"");
+        formattedText = formattedText.replace("&m", ChatColor.STRIKETHROUGH+"");
+        formattedText = formattedText.replace("&n", ChatColor.UNDERLINE+"");
+        formattedText = formattedText.replace("&n", ChatColor.ITALIC+"");
+        formattedText = formattedText.replace("&n", ChatColor.RESET+"");
+	    return formattedText;
 	}
 	
 	/**
@@ -91,6 +167,7 @@ public class JSONHandler extends JSONConstants{
 				writer.close();
 				return kits;
 			}
+			//TODO add input validation on ranges of values
 			final FileReader reader = new FileReader(kitConfigFile);
 			final JSONArray kitsJSON = (JSONArray) new JSONParser().parse(reader);
 			for(int i = 0; i < kitsJSON.size(); i++) {
@@ -99,8 +176,8 @@ public class JSONHandler extends JSONConstants{
 			        //TODO provide a more meaningful error message here
 			        continue;
 			    }
-			    final String kitName = (String)kitJSON.get(KIT_NAME);
-			    final String kitCategory = (String)kitJSON.get(KIT_CATEGORY);
+			    final String kitName = formatText((String)kitJSON.get(KIT_NAME));
+			    final String kitCategory = formatText((String)kitJSON.get(KIT_CATEGORY));
 			    final JSONArray inventoryJSON = (JSONArray)kitJSON.get(KIT_INVENTORY);
 				final Map<String, ItemStack> kitInventory = new HashMap<>();
 				for(int j = 0; j < inventoryJSON.size(); j++) {
@@ -133,7 +210,7 @@ public class JSONHandler extends JSONConstants{
                     
 				    final String itemDisplayName;
 				    if (itemJSON.containsKey(ITEM_DISPLAY_NAME)) {
-	                    itemDisplayName = (String)itemJSON.get(ITEM_DISPLAY_NAME);
+	                    itemDisplayName = formatText((String)itemJSON.get(ITEM_DISPLAY_NAME));
 	                    itemMeta.setDisplayName(itemDisplayName);
 				    }
                     
@@ -158,13 +235,17 @@ public class JSONHandler extends JSONConstants{
                         }
 				    }
                     
-				    //TODO add individual enchantment validation
 				    if (itemJSON.containsKey(ITEM_ENCHANTMENTS)) {
 				        final JSONArray enchantmentsJSON = (JSONArray)itemJSON.get(ITEM_ENCHANTMENTS);
 	                    for(int k = 0; k < enchantmentsJSON.size(); k++) {
 	                        final String enchantString = (String)enchantmentsJSON.get(k);
 	                        final String[] itemEnchant = enchantString.split("-");
-	                        itemMeta.addEnchant(enchantmentMap.get(itemEnchant[0]), Integer.parseInt(itemEnchant[1]), EXCEED_ENCHANTMENT_LEVEL_CAP);
+	                        final Enchantment itemEnchantment = enchantmentMap.getOrDefault(itemEnchant[0], null);
+	                        if (itemEnchantment == null) {
+	                            //TODO add error message
+	                            continue;
+	                        }
+	                        itemMeta.addEnchant(itemEnchantment, Integer.parseInt(itemEnchant[1]), EXCEED_ENCHANTMENT_LEVEL_CAP);
 	                    }
 				    }
 					
@@ -172,7 +253,7 @@ public class JSONHandler extends JSONConstants{
 	                    final JSONArray loreJSON = (JSONArray)itemJSON.get(ITEM_LORE);
 	                    final ArrayList<String> itemLore = new ArrayList<String>();
 	                    for(int k = 0; k < loreJSON.size(); k++) {
-	                        itemLore.add((String)loreJSON.get(k));
+	                        itemLore.add(formatText((String)loreJSON.get(k)));
 	                    }
 	                    itemMeta.setLore(itemLore);
 					}
@@ -184,7 +265,7 @@ public class JSONHandler extends JSONConstants{
     					    final String customEffectString = (String)customEffectsJSON.get(k);
     					    final String[] customEffectSplit = customEffectString.split("-");
     					    final String customEffectTypeString = customEffectSplit[0];
-                            final PotionEffectType customEffectType = PotionEffectType.getByName(customEffectTypeString);
+                            final PotionEffectType customEffectType = potionEffectMap.getOrDefault(customEffectTypeString, null);
                             if (customEffectType == null) {
                                 //TODO generate a console message logging this
                                 continue;
@@ -216,8 +297,9 @@ public class JSONHandler extends JSONConstants{
                     item.setItemMeta(itemMeta);
 					kitInventory.put(itemSlot,item);
 				}
+				//Format the kit name here so that it can be indexed with the non-formatted kit name
 				final Kit kit = new Kit(kitName, kitCategory, kitInventory);
-				kits.put(kitName, kit);
+				kits.put(ChatColor.stripColor(kitName), kit);
 			}			
 		} catch(IOException e) {
 		    //TODO print custom error message with more details

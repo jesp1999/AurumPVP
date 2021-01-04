@@ -100,7 +100,8 @@ public class AurumPVP extends JavaPlugin {
 					if (Kit.kits.containsKey(kitName)) {
 						boolean equipSuccess = Kit.kits.get(kitName).equipKit(player);
 						if (equipSuccess) {
-							sender.sendMessage("Successfully equipped the \"" + kitName + "\" kit!");
+						    final String formattedKitName = Kit.kits.get(kitName).getName();
+							sender.sendMessage("Successfully equipped the \"" + formattedKitName + "\" kit!");
 							return true;
 						} else {
 							sender.sendMessage("Failed to equip the \"" + kitName + "\" kit!");

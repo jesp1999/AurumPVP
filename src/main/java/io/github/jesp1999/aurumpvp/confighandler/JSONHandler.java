@@ -89,7 +89,7 @@ public class JSONHandler extends JSONConstants{
 					
 					JSONArray JSONLore = (JSONArray)JSONItem.get(ITEM_LORE);
 					ArrayList<String> itemLore = new ArrayList<String>();
-					for(int k = 0; k < JSONEnchantments.size(); k++) {
+					for(int k = 0; k < JSONLore.size(); k++) {
 						itemLore.add((String)JSONLore.get(k));
 					}
 					itemMeta.setLore(itemLore);

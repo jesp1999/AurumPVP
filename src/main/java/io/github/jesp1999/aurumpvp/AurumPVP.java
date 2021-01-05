@@ -3,6 +3,11 @@ package io.github.jesp1999.aurumpvp;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -10,8 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 
 import io.github.jesp1999.aurumpvp.kit.Kit;
+import io.github.jesp1999.aurumpvp.utils.Utils;
 import io.github.jesp1999.aurumpvp.confighandler.JSONConstants;
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 
@@ -148,8 +155,8 @@ public class AurumPVP extends JavaPlugin {
 				}
 			}
 		}
-		
-		if (cmd.getName().equalsIgnoreCase("writekit") || cmd.getName().equalsIgnoreCase("wk")) { // The writekit command saves a player's inventory as a kit
+        
+        if (cmd.getName().equalsIgnoreCase("writekit") || cmd.getName().equalsIgnoreCase("wk")) { // The writekit command saves a player's inventory as a kit
             if (!(sender instanceof Player)) {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
@@ -167,7 +174,91 @@ public class AurumPVP extends JavaPlugin {
                     return true;
                 }
             }
-		}
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("moveslot") || cmd.getName().equalsIgnoreCase("ms")) { // The moveslot command moves the mainhand item into the specified slot
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 1) {
+                    sender.sendMessage("Incorrect format! Do this instad: /moveslot <slot name> OR /ms <slot name>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final String slotName = args[0];
+                    final PlayerInventory inventory = player.getInventory();
+                    if (Utils.inventorySlots.containsKey(slotName)) {
+                        inventory.setItem(Utils.inventorySlots.get(slotName), inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.head")) {
+                        inventory.setHelmet(inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.chest")) {
+                        inventory.setChestplate(inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.legs")) {
+                        inventory.setLeggings(inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.feet")) {
+                        inventory.setBoots(inventory.getItemInMainHand());
+                    } else if (slotName.equals("weapon.offhand")) {
+                        inventory.setItemInOffHand(inventory.getItemInMainHand());
+                    } else {
+                        //TODO maybe suggest a format to fix any small syntax errors?
+                        sender.sendMessage("The specified slot does not exist!");
+                        return false;
+                    }
+                    inventory.setItemInMainHand(null);
+                    sender.sendMessage("The main hand item has been moved to the " + slotName + " slot successfully!");
+                    return true;
+                }
+            }
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setcolor") || cmd.getName().equalsIgnoreCase("sc")) { // The setcolor command changes the color of the mainhand item
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 1 || !args[0].chars().allMatch(c -> (Character.digit(c, 16) != -1))) {
+                    sender.sendMessage("Incorrect format! Do this instad: /setcolor <hex color> OR /sc <hex color>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final Color color = Color.fromRGB(Integer.parseInt(args[0], 16));
+                    final ItemStack item = player.getInventory().getItemInMainHand();
+                    final ItemMeta itemMeta = item.getItemMeta();
+                    if (itemMeta instanceof LeatherArmorMeta) {
+                        ((LeatherArmorMeta)itemMeta).setColor(color);
+                    } else if (itemMeta instanceof PotionMeta) {
+                        ((PotionMeta)itemMeta).setColor(color);
+                    } else {
+                        //TODO maybe suggest a format to fix any small syntax errors?
+                        sender.sendMessage("The specified item doesn't have a color!");
+                        return false;
+                    }
+                    item.setItemMeta(itemMeta);
+                    sender.sendMessage("The color of the item in the mainhand has been changed to " + args[0] + " successfully!");
+                    return true;
+                }
+            }
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("stacksize") || cmd.getName().equalsIgnoreCase("ss")) { // The stacksize command changes the stack size of the mainhand item
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 1 || !args[0].chars().allMatch(Character::isDigit)) {
+                    sender.sendMessage("Incorrect format! Do this instad: /stacksize <number> OR /ss <number>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final int stackSize = Integer.parseInt(args[0]);
+                    if (stackSize < 0 || stackSize > 127) {
+                        sender.sendMessage("The specified stack size is too high!");
+                        return false;
+                    }
+                    player.getInventory().getItemInMainHand().setAmount(stackSize);
+                    sender.sendMessage("The stack size of the item in the mainhand has been changed to " + args[0] + " successfully!");
+                    return true;
+                }
+            }
+        }
 		
 		if (cmd.getName().equalsIgnoreCase("listkits") || cmd.getName().equalsIgnoreCase("lk")) { // The listkits command lists the currently loaded kits
             if (args.length > 0) {

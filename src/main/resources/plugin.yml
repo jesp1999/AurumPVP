@@ -1,6 +1,6 @@
 name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.2.2.3
+version: 0.3.0.0
 api-version: 1.16
 
 author: Dhumina, Julian, Ian
@@ -10,6 +10,11 @@ commands:
     usage: /aurumpvp
     permission: aurumpvp.info
     permission-message: You don't have the permission aurumpvp.info
+  countdown:
+    description: This is a demo command.
+    usage: /countdown <numberOfSeconds>
+    permission: aurumpvp.countdown
+    permission-message: You don't have the permission aurumpvp.countdown
   deletekit:
     description: Deletes a kit from the kits.json configuration
     usage: /deletekit <kit name>
@@ -40,21 +45,16 @@ commands:
     usage: /lk
     permission: aurumpvp.kit.list
     permission-message: You don't have the permission aurumpvp.kit.list
-  writekit:
-    description: Writes the current player's inventory to a given kit name and category
-    usage: /writekit <kit name> <kit category>
-    permission: aurumpvp.kit.write
-    permission-message: You don't have the permission aurumpvp.kit.write
-  wk:
-    description: Writes the current player's inventory to a given kit name and category
-    usage: /wk <kit name> <kit category>
-    permission: aurumpvp.kit.write
-    permission-message: You don't have the permission aurumpvp.kit.write
-  countdown:
-    description: This is a demo command.
-    usage: /countdown <numberOfSeconds>
-    permission: aurumpvp.countdown
-    permission-message: You don't have the permission aurumpvp.countdown
+  moveslot:
+    description: Moves the item in your hand into the specified slot
+    usage: /moveslot <slot name>
+    permission: aurumpvp.inventory.moveslot
+    permission-message: You don't have the permission aurumpvp.moveslot
+  ms:
+    description: Moves the item in your hand into the specified slot
+    usage: /ms <slot name>
+    permission: aurumpvp.inventory.moveslot
+    permission-message: You don't have the permission aurumpvp.moveslot
   reloadkits:
     description: Reloads kits.
     usage: /reloadkits
@@ -65,3 +65,33 @@ commands:
     usage: /rk
     permission: aurumpvp.kit.reload
     permission-message: You don't have the permission aurumpvp.kit.reload
+  setcolor:
+    description: Changes the color of the item in the main hand.
+    usage: /setcolor <hex color>
+    permission: aurumpvp.inventory.setcolor
+    permission-message: You don't have the permission aurumpvp.inventory.setcolor
+  sc:
+    description: Changes the color of the item in the main hand.
+    usage: /setcolor <hex color>
+    permission: aurumpvp.inventory.setcolor
+    permission-message: You don't have the permission aurumpvp.inventory.setcolor
+  stacksize:
+    description: Changes the color of the item in the main hand.
+    usage: /stacksize <number>
+    permission: aurumpvp.inventory.stacksize
+    permission-message: You don't have the permission aurumpvp.inventory.stacksize
+  ss:
+    description: Changes the color of the item in the main hand.
+    usage: /ss <number>
+    permission: aurumpvp.inventory.stacksize
+    permission-message: You don't have the permission aurumpvp.inventory.stacksize
+  writekit:
+    description: Writes the current player's inventory to a given kit name and category
+    usage: /writekit <kit name> <kit category>
+    permission: aurumpvp.kit.write
+    permission-message: You don't have the permission aurumpvp.kit.write
+  wk:
+    description: Writes the current player's inventory to a given kit name and category
+    usage: /wk <kit name> <kit category>
+    permission: aurumpvp.kit.write
+    permission-message: You don't have the permission aurumpvp.kit.write

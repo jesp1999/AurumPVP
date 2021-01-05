@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
+import io.github.jesp1999.aurumpvp.utils.Utils;
 
 /**
  * Class representing the information associated with a kit pvp kit
@@ -21,49 +22,6 @@ public class Kit {
     private final String name;
     private final String category;
     private final Map<String, ItemStack> inventory;
-    
-    private static final Map<String, Integer> inventorySlots;
-    
-    static {
-        inventorySlots = new HashMap<>();
-        inventorySlots.put("hotbar.0", 0);
-        inventorySlots.put("hotbar.1", 1);
-        inventorySlots.put("hotbar.2", 2);
-        inventorySlots.put("hotbar.3", 3);
-        inventorySlots.put("hotbar.4", 4);
-        inventorySlots.put("hotbar.5", 5);
-        inventorySlots.put("hotbar.6", 6);
-        inventorySlots.put("hotbar.7", 7);
-        inventorySlots.put("hotbar.8", 8);
-        inventorySlots.put("inventory.0", 9);
-        inventorySlots.put("inventory.1", 10);
-        inventorySlots.put("inventory.2", 11);
-        inventorySlots.put("inventory.3", 12);
-        inventorySlots.put("inventory.4", 13);
-        inventorySlots.put("inventory.5", 14);
-        inventorySlots.put("inventory.6", 15);
-        inventorySlots.put("inventory.7", 16);
-        inventorySlots.put("inventory.8", 17);
-        inventorySlots.put("inventory.9", 18);
-        inventorySlots.put("inventory.10", 19);
-        inventorySlots.put("inventory.11", 20);
-        inventorySlots.put("inventory.12", 21);
-        inventorySlots.put("inventory.13", 22);
-        inventorySlots.put("inventory.14", 23);
-        inventorySlots.put("inventory.15", 24);
-        inventorySlots.put("inventory.16", 25);
-        inventorySlots.put("inventory.17", 26);
-        inventorySlots.put("inventory.18", 27);
-        inventorySlots.put("inventory.19", 28);
-        inventorySlots.put("inventory.20", 29);
-        inventorySlots.put("inventory.21", 30);
-        inventorySlots.put("inventory.22", 31);
-        inventorySlots.put("inventory.23", 32);
-        inventorySlots.put("inventory.24", 33);
-        inventorySlots.put("inventory.25", 34);
-        inventorySlots.put("inventory.26", 35);
-    }
-    
 
     public static Map<String, Kit> kits;
     
@@ -139,7 +97,7 @@ public class Kit {
         if (offhandItem != null) {
             inventoryMap.put("weapon.offhand", offhandItem);
         }
-        for(final Map.Entry<String, Integer> entry : inventorySlots.entrySet()) {
+        for(final Map.Entry<String, Integer> entry : Utils.inventorySlots.entrySet()) {
             final ItemStack currentItem = inventory.getItem(entry.getValue());
             if (currentItem != null) {
                 inventoryMap.put(entry.getKey(), currentItem);
@@ -224,7 +182,7 @@ public class Kit {
             return false;
         }
         final PlayerInventory playerInventory = player.getInventory();
-        for (final Entry<String, Integer> inventoryEntry : Kit.inventorySlots.entrySet()) {
+        for (final Entry<String, Integer> inventoryEntry : Utils.inventorySlots.entrySet()) {
             playerInventory.setItem(inventoryEntry.getValue(), this.inventory.getOrDefault(inventoryEntry.getKey(), null));
         }
         playerInventory.setHelmet(this.inventory.getOrDefault("armor.head", null));

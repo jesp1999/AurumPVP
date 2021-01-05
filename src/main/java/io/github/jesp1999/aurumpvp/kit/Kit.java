@@ -109,6 +109,45 @@ public class Kit {
     }
     
     /**
+     * Constructor for a Kit based on identifiers and the respective inventory arrangement
+     * @param name the KitName String identifier for this kit
+     * @param category KitCategory String identifier for this kit
+     * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
+     */
+    public Kit(String name, String category, PlayerInventory inventory) {
+        this.name = name;
+        this.category = category;
+        HashMap<String, ItemStack> inventoryMap = new HashMap<>();
+        ItemStack helmetItem = inventory.getHelmet();
+        if (helmetItem != null) {
+            inventoryMap.put("armor.head", helmetItem);
+        }
+        ItemStack chestplateItem = inventory.getChestplate();
+        if (chestplateItem != null) {
+            inventoryMap.put("armor.chest", chestplateItem);
+        }
+        ItemStack leggingsItem = inventory.getLeggings();
+        if (leggingsItem != null) {
+            inventoryMap.put("armor.legs", leggingsItem);
+        }
+        ItemStack bootsItem = inventory.getBoots();
+        if (bootsItem != null) {
+            inventoryMap.put("armor.feet", helmetItem);
+        }
+        ItemStack offhandItem = inventory.getItemInOffHand();
+        if (offhandItem != null) {
+            inventoryMap.put("weapon.offhand", offhandItem);
+        }
+        for(final Map.Entry<String, Integer> entry : inventorySlots.entrySet()) {
+            final ItemStack currentItem = inventory.getItem(entry.getValue());
+            if (currentItem != null) {
+                inventoryMap.put(entry.getKey(), currentItem);
+            }
+        }
+        this.inventory = inventoryMap;
+    }
+    
+    /**
      * Retrieves the category of the kit as a String
      * @return the category String identifier for this kit
      */

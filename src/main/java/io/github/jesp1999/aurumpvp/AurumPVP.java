@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 
 import io.github.jesp1999.aurumpvp.kit.Kit;
 import io.github.jesp1999.aurumpvp.confighandler.JSONConstants;
+import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 
 public class AurumPVP extends JavaPlugin {
 
@@ -76,6 +77,7 @@ public class AurumPVP extends JavaPlugin {
 			countDown(Integer.parseInt(args[0]));
 			return true;
 		}
+		
 		if(cmd.getName().equalsIgnoreCase("reloadkits") || cmd.getName().equalsIgnoreCase("rk")) {
 			File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
 			getLogger().info("Attempting to reload kits");
@@ -87,6 +89,7 @@ public class AurumPVP extends JavaPlugin {
 			    getLogger().info("Kit reload unsuccessful, see error details above.");
 			}
 		}
+		
 		if (cmd.getName().equalsIgnoreCase("kit")) { // The kit command gives the player a kit
 			if (!(sender instanceof Player)) {
 				sender.sendMessage("This command can only be run by a player.");
@@ -127,6 +130,26 @@ public class AurumPVP extends JavaPlugin {
 					return false;
 				}
 			}
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("writekit")) { // The writekit command saves a player's inventory as a kit
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 2) {
+                    sender.sendMessage("Incorrect format! Do this instad: /writekit <kit name> <kit category>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final String kitName = args[0];
+                    final String kitCategory = args[1];
+                    final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory());
+                    Kit.kits.put(kitName, currentKit);
+                    JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
+                    sender.sendMessage("The kit \"" + kitName + "\" has been written to the config successfully!");
+                    return true;
+                }
+            }
 		}
 		return false;
 	}

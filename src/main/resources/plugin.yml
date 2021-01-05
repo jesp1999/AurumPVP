@@ -1,6 +1,6 @@
 name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.1.2.4
+version: 0.2.0.2
 api-version: 1.16
 
 author: Dhumina, Julian, Ian
@@ -10,6 +10,11 @@ commands:
     usage: /kit [player] <kit name>
     permission: aurumpvp.kit
     permission-message: You don't have aurumpvp.kit
+  writekit:
+    description: Writes the current player's inventory to a given kit name and category
+    usage: /writekit <kit name> <kit category>
+    permission: aurumpvp.writekit
+    permission-message: You don't have aurumpvp.writekit
   countdown:
     description: This is a demo command.
     usage: /countdown <numberOfSeconds>

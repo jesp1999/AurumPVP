@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -1295,13 +1296,12 @@ public class JSONHandler extends JSONConstants{
 	 * @param kits Map of all kits with their names
 	 */
 	public static void exportKits(File kitConfigFile, Map<String, Kit> kits) {
-		JSONArray JSONKits = new JSONArray();
+		JSONArray kitsJSON = new JSONArray();
 		for(Map.Entry<String, Kit> entry : kits.entrySet()) {
-			JSONKits.add(getKitJSON(entry.getValue()));
+			kitsJSON.add(getKitJSON(entry.getValue()));
 		}
-		
-		try(FileWriter file = new FileWriter(kitConfigFile)) {
-			
+		try(FileWriter fw = new FileWriter(kitConfigFile)) {
+			fw.write(kitsJSON.toJSONString());
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -1312,15 +1312,19 @@ public class JSONHandler extends JSONConstants{
 	 * @param kit Kit to convert to JSON
 	 * @return JSONObject representation of kit
 	 */
-	public static JSONObject getKitJSON(Kit kit) {
-		JSONObject kitDetails = new JSONObject();
-		kitDetails.put(KIT_NAME, kit.getName());
-		kitDetails.put(KIT_CATEGORY, kit.getCategory());
+    public static JSONObject getKitJSON(Kit kit) {
+        Map<Object, Object> kitDetailsMap = new HashMap<>();
+		kitDetailsMap.put(KIT_NAME, kit.getName());
+		kitDetailsMap.put(KIT_CATEGORY, kit.getCategory());
 		JSONArray inventory = new JSONArray();
 		for(Map.Entry<String, ItemStack> entry : kit.getInventory().entrySet()) {
-			inventory.add(getItemJSON(entry.getKey(),entry.getValue()));
+		    //TODO get to the bottom of this conditional...
+			if (entry.getValue() != null && entry.getValue().getAmount() != 0) {
+			    inventory.add(getItemJSON(entry.getKey(),entry.getValue()));
+			}
 		}
-		kitDetails.put(KIT_INVENTORY, inventory);
+		kitDetailsMap.put(KIT_INVENTORY, inventory);
+        JSONObject kitDetails = new JSONObject(kitDetailsMap);
 		return kitDetails;
 	}
 	
@@ -1330,40 +1334,48 @@ public class JSONHandler extends JSONConstants{
 	 * @param item
 	 * @return
 	 */
-	public static JSONObject getItemJSON(String slot, ItemStack item) {
-		JSONObject itemDetails = new JSONObject();
+    public static JSONObject getItemJSON(String slot, ItemStack item) {
 		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta == null) {
+		    itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
+		    item.setItemMeta(itemMeta);
+		}
 		
-		itemDetails.put(ITEM_SLOT, slot);
-		itemDetails.put(ITEM_NAME, materialItemMap.get(item.getType()));
-		itemDetails.put(ITEM_DISPLAY_NAME, itemMeta.getDisplayName());
+		Map<Object, Object> itemDetailsMap = new HashMap<>();
+		
+		itemDetailsMap.put(ITEM_SLOT, slot);
+		itemDetailsMap.put(ITEM_NAME, materialItemMap.get(item.getType()));
+		itemDetailsMap.put(ITEM_DISPLAY_NAME, itemMeta.getDisplayName());
 		
 		if(itemMeta.isUnbreakable()) {
-			itemDetails.put(ITEM_DAMAGE, -1);
+		    itemDetailsMap.put(ITEM_DAMAGE, -1);
 		} else {
-			itemDetails.put(ITEM_DAMAGE, ((Damageable)itemMeta).getDamage());
+		    itemDetailsMap.put(ITEM_DAMAGE, ((Damageable)itemMeta).getDamage());
 		}
 		
 		if(itemMeta instanceof LeatherArmorMeta) {
-			itemDetails.put(ITEM_COLOR, ((LeatherArmorMeta)itemMeta).getColor());
+		    itemDetailsMap.put(ITEM_COLOR, ((LeatherArmorMeta)itemMeta).getColor().asRGB());
         } else if(itemMeta instanceof PotionMeta) {
-        	itemDetails.put(ITEM_COLOR, ((PotionMeta)itemMeta).getColor());
+            itemDetailsMap.put(ITEM_COLOR, ((PotionMeta)itemMeta).getColor().asRGB());
         }
 		
-		itemDetails.put(ITEM_AMOUNT, item.getAmount());
+		itemDetailsMap.put(ITEM_AMOUNT, item.getAmount());
 		
 		JSONArray enchantments = new JSONArray();
 		for(Map.Entry<Enchantment, Integer> entry : itemMeta.getEnchants().entrySet()) {
 			String enchString = reverseEnchantmentMap.get(entry.getKey()) + "-" + entry.getValue();
 			enchantments.add(enchString);
 		}
-		itemDetails.put(ITEM_ENCHANTMENTS, enchantments);
+		itemDetailsMap.put(ITEM_ENCHANTMENTS, enchantments);
 		
 		JSONArray lore = new JSONArray();
-		for(String line : itemMeta.getLore()) {
-			lore.add(line);
+		if (itemMeta.hasLore()) {
+    		for(String line : itemMeta.getLore()) {
+    			lore.add(line);
+    		}
 		}
-		
+
+        JSONObject itemDetails = new JSONObject(itemDetailsMap);
 		return itemDetails;
 	}
 	

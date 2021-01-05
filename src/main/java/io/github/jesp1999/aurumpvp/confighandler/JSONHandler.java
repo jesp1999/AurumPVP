@@ -1387,7 +1387,7 @@ public class JSONHandler extends JSONConstants{
 		    item.setItemMeta(itemMeta);
 		}
 		
-		Map<Object, Object> itemDetailsMap = new HashMap<>();
+		final Map<Object, Object> itemDetailsMap = new HashMap<>();
 		
 		itemDetailsMap.put(ITEM_SLOT, slot);
 		itemDetailsMap.put(ITEM_NAME, materialItemMap.get(item.getType()));
@@ -1411,23 +1411,37 @@ public class JSONHandler extends JSONConstants{
 		itemDetailsMap.put(ITEM_AMOUNT, item.getAmount());
 		
 		if (itemMeta.hasEnchants()) {
-    		JSONArray enchantments = new JSONArray();
-    		for(Map.Entry<Enchantment, Integer> entry : itemMeta.getEnchants().entrySet()) {
-    			String enchString = reverseEnchantmentMap.get(entry.getKey()) + "-" + entry.getValue();
+    		final JSONArray enchantments = new JSONArray();
+    		for(final Map.Entry<Enchantment, Integer> entry : itemMeta.getEnchants().entrySet()) {
+    			final String enchString = reverseEnchantmentMap.get(entry.getKey()) + "-" + entry.getValue();
     			enchantments.add(enchString);
     		}
     		itemDetailsMap.put(ITEM_ENCHANTMENTS, enchantments);
 		}
 		
 		if (itemMeta.hasLore()) {
-		    JSONArray lore = new JSONArray();
-    		for(String line : itemMeta.getLore()) {
+		    final JSONArray lore = new JSONArray();
+    		for(final String line : itemMeta.getLore()) {
     			lore.add(deformatText(line));
     		}
     		itemDetailsMap.put(ITEM_LORE, lore);
 		}
+		
+		if (itemMeta instanceof PotionMeta) {
+	        final JSONArray customEffects = new JSONArray();
+		    if (((PotionMeta)itemMeta).hasCustomEffects()) {
+		        for (final PotionEffect customEffect : ((PotionMeta) itemMeta).getCustomEffects()) {
+		            String customEffectString = "" + reversePotionEffectMap.get(customEffect .getType()) + "-" + customEffect.getDuration() + "-" + customEffect.getAmplifier() + "-";
+		            customEffectString += customEffect.isAmbient() ? 1 : 0;
+		            customEffectString += "-" + (customEffect.hasParticles() ? 1 : 0);
+		            customEffectString += "-" + (customEffect.hasIcon() ? 1 : 0);
+		            customEffects.add(customEffectString);
+		        }
+		    }
+	        itemDetailsMap.put(ITEM_CUSTOM_EFFECTS, customEffects);
+		}
 
-        JSONObject itemDetails = new JSONObject(itemDetailsMap);
+        final JSONObject itemDetails = new JSONObject(itemDetailsMap);
 		return itemDetails;
 	}
 	

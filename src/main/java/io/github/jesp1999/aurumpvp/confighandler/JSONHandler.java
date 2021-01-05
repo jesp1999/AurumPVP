@@ -533,18 +533,18 @@ public class JSONHandler extends JSONConstants{
         materialItemMap.put(Material.GOLD_INGOT, "gold_ingot");
         materialItemMap.put(Material.GOLD_NUGGET, "gold_nugget");
         materialItemMap.put(Material.GOLD_ORE, "gold_ore");
-        materialItemMap.put(Material.GOLD_ORE, "golden_apple");
-        materialItemMap.put(Material.GOLD_ORE, "golden_axe");
-        materialItemMap.put(Material.GOLD_ORE, "golden_boots");
-        materialItemMap.put(Material.GOLD_ORE, "golden_carrot");
-        materialItemMap.put(Material.GOLD_ORE, "golden_chestplate");
-        materialItemMap.put(Material.GOLD_ORE, "golden_helmet");
-        materialItemMap.put(Material.GOLD_ORE, "golden_hoe");
-        materialItemMap.put(Material.GOLD_ORE, "golden_horse_armor");
-        materialItemMap.put(Material.GOLD_ORE, "golden_leggings");
-        materialItemMap.put(Material.GOLD_ORE, "golden_pickaxe");
-        materialItemMap.put(Material.GOLD_ORE, "golden_shovel");
-        materialItemMap.put(Material.GOLD_ORE, "golden_sword");
+        materialItemMap.put(Material.GOLDEN_APPLE, "golden_apple");
+        materialItemMap.put(Material.GOLDEN_AXE, "golden_axe");
+        materialItemMap.put(Material.GOLDEN_BOOTS, "golden_boots");
+        materialItemMap.put(Material.GOLDEN_CARROT, "golden_carrot");
+        materialItemMap.put(Material.GOLDEN_CHESTPLATE, "golden_chestplate");
+        materialItemMap.put(Material.GOLDEN_HELMET, "golden_helmet");
+        materialItemMap.put(Material.GOLDEN_HOE, "golden_hoe");
+        materialItemMap.put(Material.GOLDEN_HORSE_ARMOR, "golden_horse_armor");
+        materialItemMap.put(Material.GOLDEN_LEGGINGS, "golden_leggings");
+        materialItemMap.put(Material.GOLDEN_PICKAXE, "golden_pickaxe");
+        materialItemMap.put(Material.GOLDEN_SHOVEL, "golden_shovel");
+        materialItemMap.put(Material.GOLDEN_SWORD, "golden_sword");
 	    materialItemMap.put(Material.GRANITE, "granite");
 	    materialItemMap.put(Material.GRANITE_SLAB, "granite_slab");
 	    materialItemMap.put(Material.GRANITE_STAIRS, "granite_stairs");
@@ -1203,6 +1203,11 @@ public class JSONHandler extends JSONConstants{
 				    
 				    final String itemSlot = (String)itemJSON.get(ITEM_SLOT);
 				    final String itemName = (String)itemJSON.get(ITEM_NAME);
+				    
+				    if (itemName == null) {
+				        logger.log(Level.WARNING, "Encountered null item in kit named \"" + kitName + "\". Skipping this item..");
+				        continue;
+				    }
                     final Material itemMaterial = Material.matchMaterial(itemName);
                     if (itemMaterial == null) {
                         logger.log(Level.WARNING, "Encountered invalid item name \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this item..");
@@ -1399,7 +1404,8 @@ public class JSONHandler extends JSONConstants{
 		if(itemMeta instanceof LeatherArmorMeta) {
 		    itemDetailsMap.put(ITEM_COLOR, ((LeatherArmorMeta)itemMeta).getColor().asRGB());
         } else if(itemMeta instanceof PotionMeta) {
-            itemDetailsMap.put(ITEM_COLOR, ((PotionMeta)itemMeta).getColor().asRGB());
+            if(((PotionMeta)itemMeta).hasColor())
+                itemDetailsMap.put(ITEM_COLOR, ((PotionMeta)itemMeta).getColor().asRGB());
         }
 		
 		itemDetailsMap.put(ITEM_AMOUNT, item.getAmount());

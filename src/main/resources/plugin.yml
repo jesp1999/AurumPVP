@@ -1,32 +1,67 @@
 name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.2.0.3
+version: 0.2.2.0
 api-version: 1.16
 
 author: Dhumina, Julian, Ian
 commands:
-  kit:
+  aurumpvp:
+    description: Lists information about the AurumPVP plugin
+    usage: /aurumpvp
+    permission: aurumpvp.info
+    permission-message: You don't have the permission aurumpvp.info
+  deletekit:
+    description: Deletes a kit from the kits.json configuration
+    usage: /deletekit <kit name>
+    permission: aurumpvp.kit.delete
+    permission-message: You don't have the permission aurumpvp.kit.delete
+  dk:
+    description: Deletes a kit from the kits.json configuration
+    usage: /dk <kit name>
+    permission: aurumpvp.kit.delete
+    permission-message: You don't have the permission aurumpvp.kit.delete
+  givekit:
     description: Gives player a kit
-    usage: /kit [player] <kit name>
-    permission: aurumpvp.kit
-    permission-message: You don't have aurumpvp.kit
+    usage: /givekit [player] <kit name>
+    permission: aurumpvp.kit.give
+    permission-message: You don't have the permission aurumpvp.kit.give
+  gk:
+    description: Gives player a kit
+    usage: /gk [player] <kit name>
+    permission: aurumpvp.kit.give
+    permission-message: You don't have the permission aurumpvp.kit.give
+  listkits:
+    description: Lists the current kits in the kits.json configuration
+    usage: /listkits
+    permission: aurumpvp.kit.list
+    permission-message: You don't have the permission aurumpvp.kit.list
+  lk:
+    description: Lists the current kits in the kits.json configuration
+    usage: /lk
+    permission: aurumpvp.kit.list
+    permission-message: You don't have the permission aurumpvp.kit.list
   writekit:
     description: Writes the current player's inventory to a given kit name and category
     usage: /writekit <kit name> <kit category>
-    permission: aurumpvp.writekit
-    permission-message: You don't have aurumpvp.writekit
+    permission: aurumpvp.kit.write
+    permission-message: You don't have the permission aurumpvp.kit.write
+  wk:
+    description: Writes the current player's inventory to a given kit name and category
+    usage: /wk <kit name> <kit category>
+    permission: aurumpvp.kit.write
+    permission-message: You don't have the permission aurumpvp.kit.write
   countdown:
     description: This is a demo command.
     usage: /countdown <numberOfSeconds>
     permission: aurumpvp.countdown
-    permission-message: You don't have aurumpvp.countdown
+    permission-message: You don't have the permission aurumpvp.countdown
   reloadkits:
     description: Reloads kits.
     usage: /reloadkits
-    permission: aurumpvp.reload
-    permission-message: You can't reload!
+    permission: aurumpvp.kit.reload
+    permission-message: You don't have the permission aurumpvp.kit.reload
   rk:
     description: Reloads kits.
     usage: /rk
-    permission: aurumpvp.reload
-    permission-message: You can't reload!
+    permission: aurumpvp.kit.reload
+    permission-message: You don't have the permission aurumpvp.kit.reload

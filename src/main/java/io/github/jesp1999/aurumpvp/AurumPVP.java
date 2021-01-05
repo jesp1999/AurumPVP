@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 
@@ -20,7 +22,7 @@ public class AurumPVP extends JavaPlugin {
 		getLogger().info("onEnable has been invoked!");
 		File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
 		getLogger().info("Attempting to initialize kits from AurumPVP/kits.json ...");
-		final boolean kitsInitialized = Kit.initializeKits(kitConfigFile);
+		final boolean kitsInitialized = Kit.initializeKits(getLogger(), kitConfigFile);
 		if (kitsInitialized) {
 		    //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
 		    getLogger().info("Kits initialized successfully!");
@@ -77,28 +79,43 @@ public class AurumPVP extends JavaPlugin {
 			countDown(Integer.parseInt(args[0]));
 			return true;
 		}
+        
+        if (cmd.getName().equalsIgnoreCase("deletekit") || cmd.getName().equalsIgnoreCase("dk")) { // The deletekit command removes a kit from the configuration (and in-game)
+            if (args.length != 1) {
+                sender.sendMessage("Incorrect format! Do this instad: /deletekit <kit name> OR /dk <kit name>");
+                return false;
+            } else {
+                final String kitName = args[0];
+                if (!Kit.kits.containsKey(kitName)) {
+                    sender.sendMessage("Kit \"" + kitName + "\" does not currently exist!");
+                    return false;
+                }
+                Kit.kits.remove(kitName);
+                JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
+                sender.sendMessage("The kit \"" + kitName + "\" has been removed from the config successfully!");
+                return true;
+            }
+        }
+        
+        if(cmd.getName().equalsIgnoreCase("reloadkits") || cmd.getName().equalsIgnoreCase("rk")) {
+            File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
+            getLogger().info("Attempting to reload kits");
+            final boolean kitsInitialized = Kit.initializeKits(getLogger(), kitConfigFile);
+            if (kitsInitialized) {
+                //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
+                getLogger().info("Kits reloaded!");
+            } else {
+                getLogger().info("Kit reload unsuccessful, see error details above.");
+            }
+        }
 		
-		if(cmd.getName().equalsIgnoreCase("reloadkits") || cmd.getName().equalsIgnoreCase("rk")) {
-			File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
-			getLogger().info("Attempting to reload kits");
-			final boolean kitsInitialized = Kit.initializeKits(kitConfigFile);
-			if (kitsInitialized) {
-			    //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
-			    getLogger().info("Kits reloaded!");
-			} else {
-			    getLogger().info("Kit reload unsuccessful, see error details above.");
-			}
-		}
-		
-		if (cmd.getName().equalsIgnoreCase("kit")) { // The kit command gives the player a kit
+		if (cmd.getName().equalsIgnoreCase("givekit") || cmd.getName().equalsIgnoreCase("gk")) { // The kit command gives the player a kit
 			if (!(sender instanceof Player)) {
 				sender.sendMessage("This command can only be run by a player.");
 			} else {
 				final Player player;
 				final String kitName;
-				if (args[0].equalsIgnoreCase("list")) { // /kit list
-					// TODO list the available kits
-				} else if (args.length == 1 || args.length == 2) { // /kit [player] <kit name>
+				if (args.length == 1 || args.length == 2) { // /kit [player] <kit name>
 					if (args.length == 1) {
 						player = (Player) sender;
 						kitName = args[0].toLowerCase();
@@ -132,7 +149,7 @@ public class AurumPVP extends JavaPlugin {
 			}
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("writekit")) { // The writekit command saves a player's inventory as a kit
+		if (cmd.getName().equalsIgnoreCase("writekit") || cmd.getName().equalsIgnoreCase("wk")) { // The writekit command saves a player's inventory as a kit
             if (!(sender instanceof Player)) {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
@@ -151,6 +168,20 @@ public class AurumPVP extends JavaPlugin {
                 }
             }
 		}
+		
+		if (cmd.getName().equalsIgnoreCase("listkits") || cmd.getName().equalsIgnoreCase("lk")) { // The listkits command lists the currently loaded kits
+            if (args.length > 0) {
+                sender.sendMessage("Incorrect format! Do this instad: /listkits");
+                return false;
+            } else {
+                final Set<String> kitNames = new HashSet<>();
+                for (Kit kit : Kit.kits.values()) {
+                    kitNames.add(kit.getName());
+                }
+                sender.sendMessage("Kits: " + kitNames);
+                return true;
+            }
+        }
 		return false;
 	}
 }

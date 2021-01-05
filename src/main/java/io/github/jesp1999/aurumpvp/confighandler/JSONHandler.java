@@ -6,6 +6,8 @@ import io.github.jesp1999.aurumpvp.map.MapInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -1157,11 +1159,11 @@ public class JSONHandler extends JSONConstants{
 	 * @param kitConfigFile The kits.json config file
 	 * @return List of valid kits with all
 	 */
-	public static Map<String, Kit> importKits(File kitConfigFile) {
+	public static Map<String, Kit> importKits(Logger logger, File kitConfigFile) {
 		final Map<String, Kit> kits = new HashMap<>();
 		try {
 			if(!kitConfigFile.exists()) {
-			    //TODO print message indicating that the kits file is being initialized
+			    logger.log(Level.WARNING, "Kit config not found! Initializing a new kit config file at " + kitConfigFile);
 			    //TODO populate the kits file with a default kit list maybe?
 				kitConfigFile.getParentFile().mkdirs();
 				final FileWriter writer = new FileWriter(kitConfigFile);
@@ -1174,9 +1176,15 @@ public class JSONHandler extends JSONConstants{
 			final JSONArray kitsJSON = (JSONArray) new JSONParser().parse(reader);
 			for(int i = 0; i < kitsJSON.size(); i++) {
 			    final JSONObject kitJSON = (JSONObject)kitsJSON.get(i);
-			    if (!(kitJSON.containsKey(KIT_NAME) || kitJSON.containsKey(KIT_CATEGORY) || kitJSON.containsKey(KIT_INVENTORY))) {
-			        //TODO provide a more meaningful error message here
+			    if (!kitJSON.containsKey(KIT_NAME)) {
+                    logger.log(Level.WARNING, "Encountered kit in config without a valid " + KIT_NAME + ". Skipping this kit..");
+                    continue;
+			    } else if(!kitJSON.containsKey(KIT_CATEGORY)) {
+			        logger.log(Level.WARNING, "Encountered kit named \"" + formatText((String)kitJSON.get(KIT_NAME)) + "\" without a valid " + KIT_CATEGORY + ". Skipping this kit..");
 			        continue;
+			    } else if (!kitJSON.containsKey(KIT_INVENTORY)) {
+			        logger.log(Level.WARNING, "Encountered kit named \"" + formatText((String)kitJSON.get(KIT_NAME)) + "\" without a valid " + KIT_INVENTORY + ". Skipping this kit..");
+                    continue;
 			    }
 			    final String kitName = formatText((String)kitJSON.get(KIT_NAME));
 			    final String kitCategory = formatText((String)kitJSON.get(KIT_CATEGORY));
@@ -1185,16 +1193,19 @@ public class JSONHandler extends JSONConstants{
 				for(int j = 0; j < inventoryJSON.size(); j++) {
 				    final JSONObject itemJSON = (JSONObject)inventoryJSON.get(j);
 				    
-				    if (!(itemJSON.containsKey(ITEM_SLOT) || itemJSON.containsKey(ITEM_NAME))) {
-				        //TODO notify the console that the item is missing a name or slot
+				    if (!itemJSON.containsKey(ITEM_NAME)) {
+				        logger.log(Level.WARNING, "Encountered item with unspecified " + ITEM_NAME + " in kit named \"" + kitName + "\". Skipping this item..");
 				        continue;
+				    } else if(!itemJSON.containsKey(ITEM_SLOT)) {
+                        logger.log(Level.WARNING, "Encountered item named \"" + (String)itemJSON.get(ITEM_NAME) + "\" with unspecified " + ITEM_SLOT + " in kit named \"" + kitName + "\". Skipping this item..");
+                        continue;
 				    }
 				    
 				    final String itemSlot = (String)itemJSON.get(ITEM_SLOT);
 				    final String itemName = (String)itemJSON.get(ITEM_NAME);
                     final Material itemMaterial = Material.matchMaterial(itemName);
                     if (itemMaterial == null) {
-                        //TODO notify the console that the item is not a valid minecraft item
+                        logger.log(Level.WARNING, "Encountered invalid item name \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this item..");
                         continue;
                     }
                     
@@ -1244,7 +1255,7 @@ public class JSONHandler extends JSONConstants{
 	                        final String[] itemEnchant = enchantString.split("-");
 	                        final Enchantment itemEnchantment = enchantmentMap.getOrDefault(itemEnchant[0], null);
 	                        if (itemEnchantment == null) {
-	                            //TODO add error message
+	                            logger.log(Level.WARNING, "Encountered invalid enchantment name in entry \"" + enchantString + "\" of item \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this enchantment entry..");
 	                            continue;
 	                        }
 	                        itemMeta.addEnchant(itemEnchantment, Integer.parseInt(itemEnchant[1]), EXCEED_ENCHANTMENT_LEVEL_CAP);
@@ -1269,7 +1280,7 @@ public class JSONHandler extends JSONConstants{
     					    final String customEffectTypeString = customEffectSplit[0];
                             final PotionEffectType customEffectType = potionEffectMap.getOrDefault(customEffectTypeString, null);
                             if (customEffectType == null) {
-                                //TODO generate a console message logging this
+                                logger.log(Level.WARNING, "Encountered invalid customEffect type in entry \"" + customEffectString + "\" of item \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this enchantment entry..");
                                 continue;
                             }
     					    final int customEffectDuration = Integer.parseInt(customEffectSplit[1]);
@@ -1305,12 +1316,15 @@ public class JSONHandler extends JSONConstants{
 			}			
 		} catch(IOException e) {
 		    //TODO print custom error message with more details
+		    logger.log(Level.SEVERE, "Ran into an IOException when trying to interface with kits.json. Details listed below:");
 		    e.printStackTrace();
 		} catch (ParseException e) {
             //TODO print custom error message with more details
+            logger.log(Level.SEVERE, "Ran into an ParseException when trying to interface with kits.json. Details listed below:");
 			e.printStackTrace();
 		} catch (ArithmeticException e) {
             //TODO print custom error message with more details
+            logger.log(Level.SEVERE, "Ran into an ArithmeticException when trying to interface with kits.json. Details listed below:");
 		    e.printStackTrace();
 		}
 		return kits;

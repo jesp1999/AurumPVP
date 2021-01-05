@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -76,9 +77,9 @@ public class Kit {
      * @param kitConfigFile
      * @return boolean representing initialization success
      */
-    public static boolean initializeKits(File kitConfigFile) {
+    public static boolean initializeKits(Logger logger, File kitConfigFile) {
         try {
-            Kit.kits = JSONHandler.importKits(kitConfigFile);
+            Kit.kits = JSONHandler.importKits(logger, kitConfigFile);
             return true;
         } catch (Exception e) {
             //TODO make this more readable

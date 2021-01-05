@@ -122,7 +122,7 @@ public class JSONHandler extends JSONConstants{
 	}
 	
 	/**
-	 * 
+	 * TODO update this
 	 * @param unformattedText
 	 * @return
 	 */
@@ -150,6 +150,32 @@ public class JSONHandler extends JSONConstants{
         formattedText = formattedText.replace("&n", ChatColor.ITALIC+"");
         formattedText = formattedText.replace("&n", ChatColor.RESET+"");
 	    return formattedText;
+	}
+	
+	private static String deformatText(String formattedText) {
+        String deformattedText = formattedText.replace(ChatColor.BLACK+"", "&0");
+        deformattedText = deformattedText.replace(ChatColor.DARK_BLUE+"", "&1");
+        deformattedText = deformattedText.replace(ChatColor.DARK_GREEN+"", "&2");
+        deformattedText = deformattedText.replace(ChatColor.DARK_AQUA+"", "&3");
+        deformattedText = deformattedText.replace(ChatColor.DARK_RED+"", "&4");
+        deformattedText = deformattedText.replace(ChatColor.DARK_PURPLE+"", "&5");
+        deformattedText = deformattedText.replace(ChatColor.GOLD+"", "&6");
+        deformattedText = deformattedText.replace(ChatColor.GRAY+"", "&7");
+        deformattedText = deformattedText.replace(ChatColor.DARK_GRAY+"", "&8");
+        deformattedText = deformattedText.replace(ChatColor.BLUE+"", "&9");
+        deformattedText = deformattedText.replace(ChatColor.GREEN+"", "&a");
+        deformattedText = deformattedText.replace(ChatColor.AQUA+"", "&b");
+        deformattedText = deformattedText.replace(ChatColor.RED+"", "&c");
+        deformattedText = deformattedText.replace(ChatColor.LIGHT_PURPLE+"", "&d");
+        deformattedText = deformattedText.replace(ChatColor.YELLOW+"", "&e");
+        deformattedText = deformattedText.replace(ChatColor.WHITE+"", "&f");
+        deformattedText = deformattedText.replace(ChatColor.MAGIC+"", "&k");
+        deformattedText = deformattedText.replace(ChatColor.BOLD+"", "&l");
+        deformattedText = deformattedText.replace(ChatColor.STRIKETHROUGH+"", "&m");
+        deformattedText = deformattedText.replace(ChatColor.UNDERLINE+"", "&n");
+        deformattedText = deformattedText.replace(ChatColor.ITALIC+"", "&n");
+        deformattedText = deformattedText.replace(ChatColor.RESET+"", "&n");
+        return deformattedText;
 	}
 	
 	private static Map<Material, String> materialItemMap = new HashMap<>();
@@ -1329,6 +1355,7 @@ public class JSONHandler extends JSONConstants{
 	}
 	
 	/**
+	 * TODO document this
 	 * Gets proper JSONObject for a given item
 	 * @param slot
 	 * @param item
@@ -1345,7 +1372,9 @@ public class JSONHandler extends JSONConstants{
 		
 		itemDetailsMap.put(ITEM_SLOT, slot);
 		itemDetailsMap.put(ITEM_NAME, materialItemMap.get(item.getType()));
-		itemDetailsMap.put(ITEM_DISPLAY_NAME, itemMeta.getDisplayName());
+		if (itemMeta.hasDisplayName()) {
+		    itemDetailsMap.put(ITEM_DISPLAY_NAME, deformatText(itemMeta.getDisplayName()));
+		}
 		
 		if(itemMeta.isUnbreakable()) {
 		    itemDetailsMap.put(ITEM_DAMAGE, -1);
@@ -1361,18 +1390,21 @@ public class JSONHandler extends JSONConstants{
 		
 		itemDetailsMap.put(ITEM_AMOUNT, item.getAmount());
 		
-		JSONArray enchantments = new JSONArray();
-		for(Map.Entry<Enchantment, Integer> entry : itemMeta.getEnchants().entrySet()) {
-			String enchString = reverseEnchantmentMap.get(entry.getKey()) + "-" + entry.getValue();
-			enchantments.add(enchString);
-		}
-		itemDetailsMap.put(ITEM_ENCHANTMENTS, enchantments);
-		
-		JSONArray lore = new JSONArray();
-		if (itemMeta.hasLore()) {
-    		for(String line : itemMeta.getLore()) {
-    			lore.add(line);
+		if (itemMeta.hasEnchants()) {
+    		JSONArray enchantments = new JSONArray();
+    		for(Map.Entry<Enchantment, Integer> entry : itemMeta.getEnchants().entrySet()) {
+    			String enchString = reverseEnchantmentMap.get(entry.getKey()) + "-" + entry.getValue();
+    			enchantments.add(enchString);
     		}
+    		itemDetailsMap.put(ITEM_ENCHANTMENTS, enchantments);
+		}
+		
+		if (itemMeta.hasLore()) {
+		    JSONArray lore = new JSONArray();
+    		for(String line : itemMeta.getLore()) {
+    			lore.add(deformatText(line));
+    		}
+    		itemDetailsMap.put(ITEM_LORE, lore);
 		}
 
         JSONObject itemDetails = new JSONObject(itemDetailsMap);

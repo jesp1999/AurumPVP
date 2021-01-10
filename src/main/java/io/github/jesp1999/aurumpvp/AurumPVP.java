@@ -11,7 +11,9 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -70,6 +72,39 @@ public class AurumPVP extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("addlore") || cmd.getName().equalsIgnoreCase("al")) { // The addlore command changes the lore of the mainhand item, allowing formatting
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 1) {
+                    sender.sendMessage("Incorrect format! Do this instad: /addlore <lore> OR /al <lore>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final ItemStack item = player.getInventory().getItemInMainHand();
+                    if (item == null || item.getType() == null) {
+                        //TODO decide what to do here
+                        sender.sendMessage("The currently selected item is invalid!");
+                        return false;
+                    }
+                    ItemMeta itemMeta = item.getItemMeta();
+                    if (itemMeta == null) {
+                        itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
+                    }
+                    List<String> lore = itemMeta.getLore();
+                    if (lore == null) {
+                        lore = new ArrayList<>();
+                    }
+                    final String newLoreLine = Utils.formatText(args[0]);
+                    lore.add(newLoreLine);
+                    itemMeta.setLore(lore);
+                    item.setItemMeta(itemMeta);
+                    sender.sendMessage("The lore of the item in the mainhand has been appended with \"" + newLoreLine + "\" successfully!");
+                    return true;
+                }
+            }
+        }
+        
 		if (cmd.getName().equalsIgnoreCase("countdown")) {
 			if (args.length > 1) {
 				sender.sendMessage("Too many arguments");
@@ -101,18 +136,6 @@ public class AurumPVP extends JavaPlugin {
                 JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
                 sender.sendMessage("The kit \"" + kitName + "\" has been removed from the config successfully!");
                 return true;
-            }
-        }
-        
-        if(cmd.getName().equalsIgnoreCase("reloadkits") || cmd.getName().equalsIgnoreCase("rk")) {
-            File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
-            getLogger().info("Attempting to reload kits");
-            final boolean kitsInitialized = Kit.initializeKits(getLogger(), kitConfigFile);
-            if (kitsInitialized) {
-                //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
-                getLogger().info("Kits reloaded!");
-            } else {
-                getLogger().info("Kit reload unsuccessful, see error details above.");
             }
         }
 		
@@ -155,57 +178,49 @@ public class AurumPVP extends JavaPlugin {
 				}
 			}
 		}
-        
-        if (cmd.getName().equalsIgnoreCase("writekit") || cmd.getName().equalsIgnoreCase("wk")) { // The writekit command saves a player's inventory as a kit
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("This command can only be run by a player.");
+
+        if (cmd.getName().equalsIgnoreCase("listkits") || cmd.getName().equalsIgnoreCase("lk")) { // The listkits command lists the currently loaded kits
+            if (args.length > 0) {
+                sender.sendMessage("Incorrect format! Do this instad: /listkits");
+                return false;
             } else {
-                if (args.length != 2) {
-                    sender.sendMessage("Incorrect format! Do this instad: /writekit <kit name> <kit category>");
-                    return false;
-                } else {
-                    final Player player = (Player) sender;
-                    final String kitName = args[0];
-                    final String kitCategory = args[1];
-                    final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory());
-                    Kit.kits.put(kitName, currentKit);
-                    JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
-                    sender.sendMessage("The kit \"" + kitName + "\" has been written to the config successfully!");
-                    return true;
+                final Set<String> kitNames = new HashSet<>();
+                for (Kit kit : Kit.kits.values()) {
+                    kitNames.add(kit.getName());
                 }
+                sender.sendMessage("Kits: " + kitNames);
+                return true;
             }
         }
         
-        if (cmd.getName().equalsIgnoreCase("moveslot") || cmd.getName().equalsIgnoreCase("ms")) { // The moveslot command moves the mainhand item into the specified slot
+        if(cmd.getName().equalsIgnoreCase("reloadkits") || cmd.getName().equalsIgnoreCase("rk")) {
+            File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
+            getLogger().info("Attempting to reload kits");
+            final boolean kitsInitialized = Kit.initializeKits(getLogger(), kitConfigFile);
+            if (kitsInitialized) {
+                //TODO note any minor errors which are functionally ignored to prevent client from ripping hair out in finding bugs
+                getLogger().info("Kits reloaded!");
+            } else {
+                getLogger().info("Kit reload unsuccessful, see error details above.");
+            }
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setamount") || cmd.getName().equalsIgnoreCase("sa")) { // The setamount command changes the stack size of the mainhand item
             if (!(sender instanceof Player)) {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
-                if (args.length != 1) {
-                    sender.sendMessage("Incorrect format! Do this instad: /moveslot <slot name> OR /ms <slot name>");
+                if (args.length != 1 || !args[0].chars().allMatch(Character::isDigit)) {
+                    sender.sendMessage("Incorrect format! Do this instad: /setamount <number> OR /sa <number>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
-                    final String slotName = args[0];
-                    final PlayerInventory inventory = player.getInventory();
-                    if (Utils.inventorySlots.containsKey(slotName)) {
-                        inventory.setItem(Utils.inventorySlots.get(slotName), inventory.getItemInMainHand());
-                    } else if (slotName.equals("armor.head")) {
-                        inventory.setHelmet(inventory.getItemInMainHand());
-                    } else if (slotName.equals("armor.chest")) {
-                        inventory.setChestplate(inventory.getItemInMainHand());
-                    } else if (slotName.equals("armor.legs")) {
-                        inventory.setLeggings(inventory.getItemInMainHand());
-                    } else if (slotName.equals("armor.feet")) {
-                        inventory.setBoots(inventory.getItemInMainHand());
-                    } else if (slotName.equals("weapon.offhand")) {
-                        inventory.setItemInOffHand(inventory.getItemInMainHand());
-                    } else {
-                        //TODO maybe suggest a format to fix any small syntax errors?
-                        sender.sendMessage("The specified slot does not exist!");
+                    final int stackSize = Integer.parseInt(args[0]);
+                    if (stackSize < 0 || stackSize > 127) {
+                        sender.sendMessage("The specified amount is too high!");
                         return false;
                     }
-                    inventory.setItemInMainHand(null);
-                    sender.sendMessage("The main hand item has been moved to the " + slotName + " slot successfully!");
+                    player.getInventory().getItemInMainHand().setAmount(stackSize);
+                    sender.sendMessage("The amount of the item in the mainhand has been changed to " + args[0] + " successfully!");
                     return true;
                 }
             }
@@ -233,46 +248,123 @@ public class AurumPVP extends JavaPlugin {
                         return false;
                     }
                     item.setItemMeta(itemMeta);
-                    sender.sendMessage("The color of the item in the mainhand has been changed to " + args[0] + " successfully!");
+                    sender.sendMessage("The color of the item in the mainhand has been changed to \"" + args[0] + "\" successfully!");
                     return true;
                 }
             }
         }
         
-        if (cmd.getName().equalsIgnoreCase("stacksize") || cmd.getName().equalsIgnoreCase("ss")) { // The stacksize command changes the stack size of the mainhand item
+        if (cmd.getName().equalsIgnoreCase("setlore") || cmd.getName().equalsIgnoreCase("sl")) { // The setlore command changes the lore of the mainhand item, allowing formatting
             if (!(sender instanceof Player)) {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
-                if (args.length != 1 || !args[0].chars().allMatch(Character::isDigit)) {
-                    sender.sendMessage("Incorrect format! Do this instad: /stacksize <number> OR /ss <number>");
+                if (args.length != 1) {
+                    sender.sendMessage("Incorrect format! Do this instad: /setlore <lore> OR /sl <lore>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
-                    final int stackSize = Integer.parseInt(args[0]);
-                    if (stackSize < 0 || stackSize > 127) {
-                        sender.sendMessage("The specified stack size is too high!");
+                    final ItemStack item = player.getInventory().getItemInMainHand();
+                    if (item == null || item.getType() == null) {
+                        //TODO decide what to do here
+                        sender.sendMessage("The currently selected item is invalid!");
                         return false;
                     }
-                    player.getInventory().getItemInMainHand().setAmount(stackSize);
-                    sender.sendMessage("The stack size of the item in the mainhand has been changed to " + args[0] + " successfully!");
+                    ItemMeta itemMeta = item.getItemMeta();
+                    if (itemMeta == null) {
+                        itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
+                    }
+                    final List<String> newLore = List.of(Utils.formatText(args[0]));
+                    itemMeta.setLore(newLore);
+                    item.setItemMeta(itemMeta);
+                    sender.sendMessage("The lore of the item in the mainhand has been changed to \"" + newLore.get(0) + "\" successfully!");
+                    return true;
+                }
+            }
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setname") || cmd.getName().equalsIgnoreCase("sn")) { // The setname command changes the name of the mainhand item, allowing formatting
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 1) {
+                    sender.sendMessage("Incorrect format! Do this instad: /setname <name> OR /sn <name>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final ItemStack item = player.getInventory().getItemInMainHand();
+                    if (item == null || item.getType() == null) {
+                        //TODO decide what to do here
+                        sender.sendMessage("The currently selected item is invalid!");
+                        return false;
+                    }
+                    ItemMeta itemMeta = item.getItemMeta();
+                    if (itemMeta == null) {
+                        itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
+                    }
+                    final String newName = Utils.formatText(args[0]);
+                    itemMeta.setDisplayName(newName);
+                    item.setItemMeta(itemMeta);
+                    sender.sendMessage("The name of the item in the mainhand has been changed to \"" + newName + "\" successfully!");
+                    return true;
+                }
+            }
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setslot") || cmd.getName().equalsIgnoreCase("ss")) { // The setslot command moves the mainhand item into the specified slot
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 1) {
+                    sender.sendMessage("Incorrect format! Do this instad: /setslot <slot name> OR /ss <slot name>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final String slotName = args[0];
+                    final PlayerInventory inventory = player.getInventory();
+                    if (Utils.inventorySlots.containsKey(slotName)) {
+                        inventory.setItem(Utils.inventorySlots.get(slotName), inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.head")) {
+                        inventory.setHelmet(inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.chest")) {
+                        inventory.setChestplate(inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.legs")) {
+                        inventory.setLeggings(inventory.getItemInMainHand());
+                    } else if (slotName.equals("armor.feet")) {
+                        inventory.setBoots(inventory.getItemInMainHand());
+                    } else if (slotName.equals("weapon.offhand")) {
+                        inventory.setItemInOffHand(inventory.getItemInMainHand());
+                    } else {
+                        //TODO maybe suggest a format to fix any small syntax errors?
+                        sender.sendMessage("The specified slot does not exist!");
+                        return false;
+                    }
+                    inventory.setItemInMainHand(null);
+                    sender.sendMessage("The main hand item has been moved to the \"" + slotName + "\" slot successfully!");
+                    return true;
+                }
+            }
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("writekit") || cmd.getName().equalsIgnoreCase("wk")) { // The writekit command saves a player's inventory as a kit
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command can only be run by a player.");
+            } else {
+                if (args.length != 2) {
+                    sender.sendMessage("Incorrect format! Do this instad: /writekit <kit name> <kit category>");
+                    return false;
+                } else {
+                    final Player player = (Player) sender;
+                    final String kitName = args[0];
+                    final String kitCategory = args[1];
+                    final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory());
+                    Kit.kits.put(kitName, currentKit);
+                    JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
+                    sender.sendMessage("The kit \"" + kitName + "\" has been written to the config successfully!");
                     return true;
                 }
             }
         }
 		
-		if (cmd.getName().equalsIgnoreCase("listkits") || cmd.getName().equalsIgnoreCase("lk")) { // The listkits command lists the currently loaded kits
-            if (args.length > 0) {
-                sender.sendMessage("Incorrect format! Do this instad: /listkits");
-                return false;
-            } else {
-                final Set<String> kitNames = new HashSet<>();
-                for (Kit kit : Kit.kits.values()) {
-                    kitNames.add(kit.getName());
-                }
-                sender.sendMessage("Kits: " + kitNames);
-                return true;
-            }
-        }
 		return false;
 	}
 }

@@ -1,10 +1,20 @@
 name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.3.0.0
+version: 0.3.0.2
 api-version: 1.16
 
 author: Dhumina, Julian, Ian
 commands:
+  addlore:
+    description: Adds a line to the lore of the item in the main hand.
+    usage: /addlore <lore>
+    permission: aurumpvp.inventory.addlore
+    permission-message: You don't have the permission aurumpvp.inventory.addlore
+  al:
+    description: Adds a line to the lore of the item in the main hand.
+    usage: /al <lore>
+    permission: aurumpvp.inventory.addlore
+    permission-message: You don't have the permission aurumpvp.inventory.addlore
   aurumpvp:
     description: Lists information about the AurumPVP plugin
     usage: /aurumpvp
@@ -45,16 +55,6 @@ commands:
     usage: /lk
     permission: aurumpvp.kit.list
     permission-message: You don't have the permission aurumpvp.kit.list
-  moveslot:
-    description: Moves the item in your hand into the specified slot
-    usage: /moveslot <slot name>
-    permission: aurumpvp.inventory.moveslot
-    permission-message: You don't have the permission aurumpvp.moveslot
-  ms:
-    description: Moves the item in your hand into the specified slot
-    usage: /ms <slot name>
-    permission: aurumpvp.inventory.moveslot
-    permission-message: You don't have the permission aurumpvp.moveslot
   reloadkits:
     description: Reloads kits.
     usage: /reloadkits
@@ -65,6 +65,16 @@ commands:
     usage: /rk
     permission: aurumpvp.kit.reload
     permission-message: You don't have the permission aurumpvp.kit.reload
+  setamount:
+    description: Changes the quantity of the item in the main hand.
+    usage: /setamount <number>
+    permission: aurumpvp.inventory.setamount
+    permission-message: You don't have the permission aurumpvp.inventory.setamount
+  sa:
+    description: Changes the quantity of the item in the main hand.
+    usage: /ss <number>
+    permission: aurumpvp.inventory.setamount
+    permission-message: You don't have the permission aurumpvp.inventory.setamount
   setcolor:
     description: Changes the color of the item in the main hand.
     usage: /setcolor <hex color>
@@ -72,19 +82,39 @@ commands:
     permission-message: You don't have the permission aurumpvp.inventory.setcolor
   sc:
     description: Changes the color of the item in the main hand.
-    usage: /setcolor <hex color>
+    usage: /sc <hex color>
     permission: aurumpvp.inventory.setcolor
     permission-message: You don't have the permission aurumpvp.inventory.setcolor
-  stacksize:
-    description: Changes the color of the item in the main hand.
-    usage: /stacksize <number>
-    permission: aurumpvp.inventory.stacksize
-    permission-message: You don't have the permission aurumpvp.inventory.stacksize
+  setlore:
+    description: Changes the lore of the item in the main hand.
+    usage: /setlore <lore>
+    permission: aurumpvp.inventory.setlore
+    permission-message: You don't have the permission aurumpvp.inventory.setlore
+  sl:
+    description: Changes the lore of the item in the main hand.
+    usage: /sl <lore>
+    permission: aurumpvp.inventory.setlore
+    permission-message: You don't have the permission aurumpvp.inventory.setlore
+  setname:
+    description: Changes the name of the item in the main hand.
+    usage: /setname <name>
+    permission: aurumpvp.inventory.setname
+    permission-message: You don't have the permission aurumpvp.inventory.setname
+  sn:
+    description: Changes the name of the item in the main hand.
+    usage: /sn <name>
+    permission: aurumpvp.inventory.setname
+    permission-message: You don't have the permission aurumpvp.inventory.setname
+  setslot:
+    description: Moves the item in your hand into the specified slot
+    usage: /setslot <slot name>
+    permission: aurumpvp.inventory.setslot
+    permission-message: You don't have the permission aurumpvp.setslot
   ss:
-    description: Changes the color of the item in the main hand.
-    usage: /ss <number>
-    permission: aurumpvp.inventory.stacksize
-    permission-message: You don't have the permission aurumpvp.inventory.stacksize
+    description: Moves the item in your hand into the specified slot
+    usage: /ss <slot name>
+    permission: aurumpvp.inventory.setslot
+    permission-message: You don't have the permission aurumpvp.setslot
   writekit:
     description: Writes the current player's inventory to a given kit name and category
     usage: /writekit <kit name> <kit category>

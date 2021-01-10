@@ -163,8 +163,9 @@ public class Utils {
         formattedText = formattedText.replace("&l", ChatColor.BOLD+"");
         formattedText = formattedText.replace("&m", ChatColor.STRIKETHROUGH+"");
         formattedText = formattedText.replace("&n", ChatColor.UNDERLINE+"");
-        formattedText = formattedText.replace("&n", ChatColor.ITALIC+"");
-        formattedText = formattedText.replace("&n", ChatColor.RESET+"");
+        formattedText = formattedText.replace("&o", ChatColor.ITALIC+"");
+        formattedText += "&r";
+        formattedText = formattedText.replace("&r", ChatColor.RESET+"");
         return formattedText;
     }
     

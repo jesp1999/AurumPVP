@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,38 +73,6 @@ public class AurumPVP extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("addlore") || cmd.getName().equalsIgnoreCase("al")) { // The addlore command changes the lore of the mainhand item, allowing formatting
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("This command can only be run by a player.");
-            } else {
-                if (args.length != 1) {
-                    sender.sendMessage("Incorrect format! Do this instad: /addlore <lore> OR /al <lore>");
-                    return false;
-                } else {
-                    final Player player = (Player) sender;
-                    final ItemStack item = player.getInventory().getItemInMainHand();
-                    if (item == null || item.getType() == null) {
-                        //TODO decide what to do here
-                        sender.sendMessage("The currently selected item is invalid!");
-                        return false;
-                    }
-                    ItemMeta itemMeta = item.getItemMeta();
-                    if (itemMeta == null) {
-                        itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
-                    }
-                    List<String> lore = itemMeta.getLore();
-                    if (lore == null) {
-                        lore = new ArrayList<>();
-                    }
-                    final String newLoreLine = Utils.formatText(args[0]);
-                    lore.add(newLoreLine);
-                    itemMeta.setLore(lore);
-                    item.setItemMeta(itemMeta);
-                    sender.sendMessage("The lore of the item in the mainhand has been appended with \"" + newLoreLine + "\" successfully!");
-                    return true;
-                }
-            }
-        }
         
 		if (cmd.getName().equalsIgnoreCase("countdown")) {
 			if (args.length > 1) {
@@ -258,7 +227,7 @@ public class AurumPVP extends JavaPlugin {
             if (!(sender instanceof Player)) {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
-                if (args.length != 1) {
+                if (args.length < 1) {
                     sender.sendMessage("Incorrect format! Do this instad: /setlore <lore> OR /sl <lore>");
                     return false;
                 } else {
@@ -273,10 +242,16 @@ public class AurumPVP extends JavaPlugin {
                     if (itemMeta == null) {
                         itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
                     }
-                    final List<String> newLore = List.of(Utils.formatText(args[0]));
+                    String concatenatedText = args[0];
+                    for (int i = 1; i < args.length; i++) {
+                        concatenatedText += " " + args[i];
+                    }
+                    concatenatedText = Utils.formatText(concatenatedText);
+                    final List<String> newLore = Arrays.asList(concatenatedText.split("\\|"));
                     itemMeta.setLore(newLore);
                     item.setItemMeta(itemMeta);
-                    sender.sendMessage("The lore of the item in the mainhand has been changed to \"" + newLore.get(0) + "\" successfully!");
+                    //TODO display this better..
+                    sender.sendMessage("The lore of the item in the mainhand has been changed to \"" + newLore + "\" successfully!");
                     return true;
                 }
             }

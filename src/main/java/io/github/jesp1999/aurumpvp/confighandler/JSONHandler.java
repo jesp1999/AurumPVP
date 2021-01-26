@@ -14,20 +14,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.bukkit.*;
+import org.bukkit.block.Banner;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
+import org.bukkit.inventory.meta.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -196,6 +194,26 @@ public class JSONHandler extends JSONConstants{
     					    ((PotionMeta) itemMeta).addCustomEffect(itemCustomEffect, OVERWRITE_SAME_EFFECT_TYPE);
     					}
 					}
+
+
+					//TODO add banner pattern input validation
+					if (itemJSON.containsKey(ITEM_BANNER_ART)) {
+						if (itemMeta instanceof BlockStateMeta) {
+							final BlockState blockState = ((BlockStateMeta) itemMeta).getBlockState();
+							if (blockState instanceof Banner) {
+								final JSONArray bannerArtJSON = (JSONArray)itemJSON.get(ITEM_BANNER_ART);
+								for(int k = 0; k < bannerArtJSON.size(); k++) {
+									final JSONObject bannerPatternJSON = (JSONObject)bannerArtJSON.get(k);
+									final DyeColor bannerPatternColor = DyeColor.getByColor(Color.fromRGB((int)bannerPatternJSON.get("pattern")));
+									final PatternType bannerPatternType = PatternType.getByIdentifier((String)bannerPatternJSON.get("type"));
+									Pattern bannerPattern = new Pattern(bannerPatternColor, bannerPatternType);
+									((Banner)blockState).addPattern(bannerPattern);
+								}
+								((BlockStateMeta)itemMeta).setBlockState(blockState);
+							}
+						}
+					}
+
                     item.setItemMeta(itemMeta);
 					kitInventory.put(itemSlot,item);
 				}
@@ -323,6 +341,21 @@ public class JSONHandler extends JSONConstants{
 		        }
 		    }
 	        itemDetailsMap.put(ITEM_CUSTOM_EFFECTS, customEffects);
+		}
+
+		//TODO figure out why this isn't working..
+		if (itemMeta instanceof BlockStateMeta) {
+			final BlockState blockState = ((BlockStateMeta) itemMeta).getBlockState();
+			if (blockState instanceof Banner) {
+				final JSONArray bannerArtJSON = new JSONArray();
+				for (final Pattern bannerPattern : ((Banner)blockState).getPatterns()) {
+					final JSONObject patternJSON = new JSONObject();
+					patternJSON.put("color", bannerPattern.getColor().getColor().asRGB());
+					patternJSON.put("type", bannerPattern.getPattern().getIdentifier());
+					bannerArtJSON.add(patternJSON);
+				}
+				itemDetailsMap.put(ITEM_BANNER_ART, bannerArtJSON);
+			}
 		}
 
         final JSONObject itemDetails = new JSONObject(itemDetailsMap);

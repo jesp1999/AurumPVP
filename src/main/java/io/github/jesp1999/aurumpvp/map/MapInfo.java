@@ -52,7 +52,8 @@ public class MapInfo {
      * @return the coordinates for the spawn-point on this map as a List<Float>
      */
     public List<Float> getSpawnCoordinates() {
-        return List.of(this.spawnX, this.spawnY, this.spawnZ);
+        throw new UnsupportedOperationException();
+        //return List.of(this.spawnX, this.spawnY, this.spawnZ);
     }
 
     /**
@@ -60,6 +61,7 @@ public class MapInfo {
      * @return set of the coordinates which define the rectangular boundary of this map as a Set<List<FLoat>>
      */
     public Set<List<Float>> getMapOrigins() {
-        return Set.of(List.of(this.x1, this.y1, this.z1), List.of(this.x2, this.y2, this.z2));
+        throw new UnsupportedOperationException();
+        //return Set.of(List.of(this.x1, this.y1, this.z1), List.of(this.x2, this.y2, this.z2));
     }
 }

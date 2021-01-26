@@ -11,7 +11,6 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -93,7 +92,7 @@ public class AurumPVP extends JavaPlugin {
         
         if (cmd.getName().equalsIgnoreCase("deletekit") || cmd.getName().equalsIgnoreCase("dk")) { // The deletekit command removes a kit from the configuration (and in-game)
             if (args.length != 1) {
-                sender.sendMessage("Incorrect format! Do this instad: /deletekit <kit name> OR /dk <kit name>");
+                sender.sendMessage("Incorrect format! Do this instead: /deletekit <kit name> OR /dk <kit name>");
                 return false;
             } else {
                 final String kitName = args[0];
@@ -103,6 +102,8 @@ public class AurumPVP extends JavaPlugin {
                 }
                 Kit.kits.remove(kitName);
                 JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
+                final boolean kitsInitialized = Kit.initializeKits(getLogger(), new File(getDataFolder(), JSONConstants.KIT_FILENAME));
+                // TODO check if kit reinitialization was successful
                 sender.sendMessage("The kit \"" + kitName + "\" has been removed from the config successfully!");
                 return true;
             }
@@ -124,7 +125,7 @@ public class AurumPVP extends JavaPlugin {
 					}
 					if (player == null) {
 						sender.sendMessage(
-								"Kit \"" + kitName + "\" could not be equipped for player \"" + player + "\".");
+								"Kit \"" + kitName + "\" could not be equipped for player \"" + args[0] + "\".");
 						return false;
 					}
 					if (Kit.kits.containsKey(kitName)) {
@@ -150,7 +151,7 @@ public class AurumPVP extends JavaPlugin {
 
         if (cmd.getName().equalsIgnoreCase("listkits") || cmd.getName().equalsIgnoreCase("lk")) { // The listkits command lists the currently loaded kits
             if (args.length > 0) {
-                sender.sendMessage("Incorrect format! Do this instad: /listkits");
+                sender.sendMessage("Incorrect format! Do this instead: /listkits");
                 return false;
             } else {
                 final Set<String> kitNames = new HashSet<>();
@@ -179,7 +180,7 @@ public class AurumPVP extends JavaPlugin {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
                 if (args.length != 1 || !args[0].chars().allMatch(Character::isDigit)) {
-                    sender.sendMessage("Incorrect format! Do this instad: /setamount <number> OR /sa <number>");
+                    sender.sendMessage("Incorrect format! Do this instead: /setamount <number> OR /sa <number>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
@@ -200,7 +201,7 @@ public class AurumPVP extends JavaPlugin {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
                 if (args.length != 1 || !args[0].chars().allMatch(c -> (Character.digit(c, 16) != -1))) {
-                    sender.sendMessage("Incorrect format! Do this instad: /setcolor <hex color> OR /sc <hex color>");
+                    sender.sendMessage("Incorrect format! Do this instead: /setcolor <hex color> OR /sc <hex color>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
@@ -228,16 +229,11 @@ public class AurumPVP extends JavaPlugin {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
                 if (args.length < 1) {
-                    sender.sendMessage("Incorrect format! Do this instad: /setlore <lore> OR /sl <lore>");
+                    sender.sendMessage("Incorrect format! Do this instead: /setlore <lore> OR /sl <lore>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
                     final ItemStack item = player.getInventory().getItemInMainHand();
-                    if (item == null || item.getType() == null) {
-                        //TODO decide what to do here
-                        sender.sendMessage("The currently selected item is invalid!");
-                        return false;
-                    }
                     ItemMeta itemMeta = item.getItemMeta();
                     if (itemMeta == null) {
                         itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
@@ -262,16 +258,11 @@ public class AurumPVP extends JavaPlugin {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
                 if (args.length != 1) {
-                    sender.sendMessage("Incorrect format! Do this instad: /setname <name> OR /sn <name>");
+                    sender.sendMessage("Incorrect format! Do this instead: /setname <name> OR /sn <name>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
                     final ItemStack item = player.getInventory().getItemInMainHand();
-                    if (item == null || item.getType() == null) {
-                        //TODO decide what to do here
-                        sender.sendMessage("The currently selected item is invalid!");
-                        return false;
-                    }
                     ItemMeta itemMeta = item.getItemMeta();
                     if (itemMeta == null) {
                         itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
@@ -290,7 +281,7 @@ public class AurumPVP extends JavaPlugin {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
                 if (args.length != 1) {
-                    sender.sendMessage("Incorrect format! Do this instad: /setslot <slot name> OR /ss <slot name>");
+                    sender.sendMessage("Incorrect format! Do this instead: /setslot <slot name> OR /ss <slot name>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
@@ -325,7 +316,7 @@ public class AurumPVP extends JavaPlugin {
                 sender.sendMessage("This command can only be run by a player.");
             } else {
                 if (args.length != 2) {
-                    sender.sendMessage("Incorrect format! Do this instad: /writekit <kit name> <kit category>");
+                    sender.sendMessage("Incorrect format! Do this instead: /writekit <kit name> <kit category>");
                     return false;
                 } else {
                     final Player player = (Player) sender;
@@ -334,6 +325,8 @@ public class AurumPVP extends JavaPlugin {
                     final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory());
                     Kit.kits.put(kitName, currentKit);
                     JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
+                    final boolean kitsInitialized = Kit.initializeKits(getLogger(), new File(getDataFolder(), JSONConstants.KIT_FILENAME));
+                    // TODO check if kit reinitialization was successful
                     sender.sendMessage("The kit \"" + kitName + "\" has been written to the config successfully!");
                     return true;
                 }

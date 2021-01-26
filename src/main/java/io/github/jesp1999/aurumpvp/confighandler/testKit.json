@@ -11,11 +11,22 @@
         "amount": 1,
         "enchantments": [
             "protection-1"
-        ]
+        ],
         "lore": [
             "This is an epic diamond helmet",
             "line 2"
-        ]
+        ],
+        "bannerArt": [
+            {
+              "color": "BLACK",
+              "type": "HALF_HORIZONTAL"
+            },
+            {
+              "color": "YELLOW",
+              "type": "CIRCLE_MIDDLE"
+            }
+          ]
+        }
       }
     ]
   }

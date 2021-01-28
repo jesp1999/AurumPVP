@@ -1,8 +1,10 @@
 package io.github.jesp1999.aurumpvp;
 
+import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -11,10 +13,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -25,6 +24,7 @@ import io.github.jesp1999.aurumpvp.confighandler.JSONConstants;
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 
 public class AurumPVP extends JavaPlugin {
+    private List<Listener> listeners = new LinkedList<>();
 
 	@Override
 	public void onEnable() {
@@ -39,6 +39,10 @@ public class AurumPVP extends JavaPlugin {
 		    getLogger().info("Kit initialization unsuccessful, see error details above.");
 		}
 	}
+
+	public void startListener(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
+    }
 
 	@Override
 	public void onDisable() {
@@ -322,7 +326,8 @@ public class AurumPVP extends JavaPlugin {
                     final Player player = (Player) sender;
                     final String kitName = args[0];
                     final String kitCategory = args[1];
-                    final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory());
+                    final List<Listener> listeners = new ArrayList<Listener>();
+                    final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory(), listeners);
                     Kit.kits.put(kitName, currentKit);
                     JSONHandler.exportKits(new File(getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
                     final boolean kitsInitialized = Kit.initializeKits(getLogger(), new File(getDataFolder(), JSONConstants.KIT_FILENAME));

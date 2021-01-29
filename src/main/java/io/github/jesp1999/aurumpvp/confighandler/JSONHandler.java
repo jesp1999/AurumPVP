@@ -4,9 +4,7 @@ import io.github.jesp1999.aurumpvp.kit.Kit;
 import io.github.jesp1999.aurumpvp.map.MapInfo;
 import io.github.jesp1999.aurumpvp.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.File;
@@ -19,6 +17,7 @@ import org.bukkit.block.Banner;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.meta.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -218,7 +217,8 @@ public class JSONHandler extends JSONConstants{
 					kitInventory.put(itemSlot,item);
 				}
 				//Format the kit name here so that it can be indexed with the non-formatted kit name
-				final Kit kit = new Kit(kitName, kitCategory, kitInventory);
+				final List<Listener> listeners = new LinkedList<Listener>();
+				final Kit kit = new Kit(kitName, kitCategory, kitInventory,listeners);
 				kits.put(ChatColor.stripColor(kitName), kit);
 			}			
 		} catch(IOException e) {

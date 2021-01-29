@@ -2,13 +2,16 @@ package io.github.jesp1999.aurumpvp.kit;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import io.github.jesp1999.aurumpvp.AurumPVP;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.event.Listener;
 
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 import io.github.jesp1999.aurumpvp.utils.Utils;
@@ -22,6 +25,7 @@ public class Kit {
     private final String name;
     private final String category;
     private final Map<String, ItemStack> inventory;
+    private final List<Listener> listeners;
 
     public static Map<String, Kit> kits;
     
@@ -54,17 +58,9 @@ public class Kit {
         Kit.kits = new HashMap<>();
         return true;
     }
-    
-    /**
-     * Constructor for a Kit based on identifiers and the respective inventory arrangement
-     * @param name the KitName String identifier for this kit
-     * @param category KitCategory String identifier for this kit
-     * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
-     */
-    public Kit(String name, String category, Map<String, ItemStack> inventory) {
-        this.name = name;
-        this.category = category;
-        this.inventory = inventory;
+
+    public void registerListeners() {
+        //magic
     }
     
     /**
@@ -73,7 +69,20 @@ public class Kit {
      * @param category KitCategory String identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(String name, String category, PlayerInventory inventory) {
+    public Kit(String name, String category, Map<String, ItemStack> inventory, List<Listener> listeners) {
+        this.name = name;
+        this.category = category;
+        this.inventory = inventory;
+        this.listeners = listeners;
+    }
+    
+    /**
+     * Constructor for a Kit based on identifiers and the respective inventory arrangement
+     * @param name the KitName String identifier for this kit
+     * @param category KitCategory String identifier for this kit
+     * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
+     */
+    public Kit(String name, String category, PlayerInventory inventory, List<Listener> listeners) {
         this.name = name;
         this.category = category;
         HashMap<String, ItemStack> inventoryMap = new HashMap<>();
@@ -104,6 +113,7 @@ public class Kit {
             }
         }
         this.inventory = inventoryMap;
+        this.listeners = listeners;
     }
     
     /**
@@ -184,6 +194,9 @@ public class Kit {
         final PlayerInventory playerInventory = player.getInventory();
         for (final Entry<String, Integer> inventoryEntry : Utils.inventorySlots.entrySet()) {
             playerInventory.setItem(inventoryEntry.getValue(), this.inventory.getOrDefault(inventoryEntry.getKey(), null));
+        }
+        for(Listener listener : this.listeners) {
+//            AurumPVP.
         }
         playerInventory.setHelmet(this.inventory.getOrDefault("armor.head", null));
         playerInventory.setChestplate(this.inventory.getOrDefault("armor.chest", null));

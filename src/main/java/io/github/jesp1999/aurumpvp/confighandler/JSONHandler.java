@@ -19,6 +19,8 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.meta.*;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -34,7 +36,16 @@ import org.bukkit.potion.PotionEffectType;
  *
  */
 public class JSONHandler extends JSONConstants{
-	
+	private static PluginManager pluginManager;
+
+	/**
+	 * Attaches a given pluginmanager to this jsonhandler statically
+	 * @param pluginManager instance of the pluginmanager class for this server
+	 */
+	public static void setPluginManager(PluginManager pluginManager) {
+		JSONHandler.pluginManager = pluginManager;
+	}
+
 	/**
 	 * Takes JSON file of kits and translates it to Java objects
 	 * @param kitConfigFile The kits.json config file

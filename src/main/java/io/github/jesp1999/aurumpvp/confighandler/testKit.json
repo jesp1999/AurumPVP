@@ -17,16 +17,15 @@
             "line 2"
         ],
         "bannerArt": [
-            {
-              "color": "BLACK",
-              "type": "HALF_HORIZONTAL"
-            },
-            {
-              "color": "YELLOW",
-              "type": "CIRCLE_MIDDLE"
-            }
-          ]
-        }
+          {
+            "color": "BLACK",
+            "type": "HALF_HORIZONTAL"
+          },
+          {
+            "color": "YELLOW",
+            "type": "CIRCLE_MIDDLE"
+          }
+        ]
       }
     ]
   }

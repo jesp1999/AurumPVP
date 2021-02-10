@@ -29,6 +29,7 @@ public class AurumPVP extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		getLogger().info("onEnable has been invoked!");
+		JSONHandler.setPluginManager(getServer().getPluginManager());
 		File kitConfigFile = new File(getDataFolder(), JSONConstants.KIT_FILENAME);
 		getLogger().info("Attempting to initialize kits from AurumPVP/kits.json ...");
 		final boolean kitsInitialized = Kit.initializeKits(getLogger(), kitConfigFile);

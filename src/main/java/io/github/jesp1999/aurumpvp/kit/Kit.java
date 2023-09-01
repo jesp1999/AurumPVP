@@ -8,6 +8,9 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import io.github.jesp1999.aurumpvp.AurumPVP;
+import io.github.jesp1999.aurumpvp.events.KitChangeEvent;
+import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
+import org.bukkit.Effect;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -15,6 +18,8 @@ import org.bukkit.event.Listener;
 
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 import io.github.jesp1999.aurumpvp.utils.Utils;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 /**
  * Class representing the information associated with a kit pvp kit
@@ -22,12 +27,15 @@ import io.github.jesp1999.aurumpvp.utils.Utils;
  *
  */
 public class Kit {
+    private static Plugin plugin;
+    public static Map<String, Kit> kits;
+
     private final String name;
     private final String category;
+    private final List<Effect> effects;
     private final Map<String, ItemStack> inventory;
     private final List<Listener> listeners;
 
-    public static Map<String, Kit> kits;
     
 //    public static Kit ninja, bomber, tactician, hunter, sniper, archer, assassin, scout, medic, marauder;
 //    public static Kit knight, berserker, nymph, challenger, miner, reaper;
@@ -36,7 +44,7 @@ public class Kit {
     
     /**
      * Initializes the base kits as static members of Kit
-     * @param kitConfigFile
+     * @param kitConfigFile file where the server's kit configurations are stored
      * @return boolean representing initialization success
      */
     public static boolean initializeKits(Logger logger, File kitConfigFile) {
@@ -59,8 +67,22 @@ public class Kit {
         return true;
     }
 
+    /**
+     * Attaches a given plugin to this kit statically
+     * @param plugin instance of the plugin class for this server
+     */
+    public static void setPlugin(Plugin plugin) {
+        Kit.plugin = plugin;
+    }
+
     public void registerListeners() {
         //magic
+        listeners.add(new PassiveEffectListener());
+
+        for(Listener listener : listeners) {
+            Kit.plugin.getServer().getPluginManager().registerEvents(listener, Kit.plugin);
+            //log this somehow
+        }
     }
     
     /**
@@ -69,11 +91,12 @@ public class Kit {
      * @param category KitCategory String identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(String name, String category, Map<String, ItemStack> inventory, List<Listener> listeners) {
+    public Kit(String name, String category, Map<String, ItemStack> inventory, List<Listener> listeners, List<Effect> effects) {
         this.name = name;
         this.category = category;
         this.inventory = inventory;
         this.listeners = listeners;
+        this.effects = effects;
     }
     
     /**
@@ -195,14 +218,16 @@ public class Kit {
         for (final Entry<String, Integer> inventoryEntry : Utils.inventorySlots.entrySet()) {
             playerInventory.setItem(inventoryEntry.getValue(), this.inventory.getOrDefault(inventoryEntry.getKey(), null));
         }
-        for(Listener listener : this.listeners) {
-//            AurumPVP.
-        }
         playerInventory.setHelmet(this.inventory.getOrDefault("armor.head", null));
         playerInventory.setChestplate(this.inventory.getOrDefault("armor.chest", null));
         playerInventory.setLeggings(this.inventory.getOrDefault("armor.legs", null));
         playerInventory.setBoots(this.inventory.getOrDefault("armor.feet", null));
         playerInventory.setItemInOffHand(this.inventory.getOrDefault("weapon.offhand", null));
+
+        KitChangeEvent kitChangeEvent = new KitChangeEvent(player,null, this);
+        Kit.plugin.getServer().getPluginManager().callEvent(kitChangeEvent);
+
+
         return true; //TODO provide situations where this might be false
     }
 }

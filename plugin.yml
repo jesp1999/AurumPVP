@@ -1,0 +1,141 @@
+main: io.github.jesp1999.aurumpvp
+name: AurumPVPPlugin
+version: '0.3.3.0'
+description: AurumPVP Plugin
+load: POSTWORLD
+author: jesp1999
+website: jesp1999.github.io
+prefix: AurumPVP
+commands:
+  countdown:
+    description: Starts a countdown timer
+    aliases:
+      - cd
+    permission: aurumpvp.misc.countdown
+    permission-message: You do not have permission!
+    usage: /<command>
+  deletekit:
+    description: Deletes a selected kit
+    aliases:
+      - dk
+      - delkit
+    permission: aurumpvp.kit.delete
+    permission-message: You do not have permission!
+    usage: /<command> <kit>
+  givekit:
+    description: Gives the user a selected kit
+    aliases:
+      - gk
+      - getkit
+    permission: aurumpvp.kit.give
+    permission-message: You do not have permission!
+    usage: /<command> <kit>
+  listkits:
+    description: Lists the available kits
+    aliases:
+      - lk
+      - listkit
+    permission: aurumpvp.kit.list
+    permission-message: You do not have permission!
+    usage: /<command>
+  reloadkits:
+    description: Reloads the available kits
+    aliases:
+      - rk
+      - relkits
+      - relkit
+    permission: aurumpvp.kit.reload
+    permission-message: You do not have permission!
+    usage: /<command>
+  setamount:
+    description: Sets the stack size of the currently held item
+    aliases:
+      - setstacksize
+      - sa
+    permission: aurumpvp.misc.setamount
+    permission-message: You do not have permission!
+    usage: /<command>
+  setcolor:
+    description: Sets the color of the currently held item
+    aliases:
+      - sc
+    permission: aurumpvp.misc.setcolor
+    permission-message: You do not have permission!
+    usage: /<command>
+  setlore:
+    description: Sets the lore of the currently held item
+    aliases:
+      - sl
+    permission: aurumpvp.misc.setlore
+    permission-message: You do not have permission!
+    usage: /<command>
+  setname:
+    description: Sets the name of the currently held item
+    aliases:
+      - sn
+    permission: aurumpvp.misc.setname
+    permission-message: You do not have permission!
+    usage: /<command>
+  setslot:
+    description: Sets the slot of the currently held item
+    aliases:
+      - ss
+    permission: aurumpvp.misc.setslot
+    permission-message: You do not have permission!
+    usage: /<command>
+  writekit:
+    description: Deletes a selected kit
+    aliases:
+      - wk
+    permission: aurumpvp.kit.write
+    permission-message: You do not have permission!
+    usage: /<command> <kit>
+permissions:
+  aurumpvp.kit.delete:
+    description: Allows delete kit command
+    default: op
+  aurumpvp.kit.give:
+    description: Allows give kit command
+    default: op
+  aurumpvp.kit.list:
+    description: Allows list kits command
+    default: op
+  aurumpvp.kit.reload:
+    description: Allows reload kits command
+    default: op
+  aurumpvp.kit.write:
+    description: Allows write kit command
+    default: op
+  aurumpvp.misc.countdown:
+    description: Allows countdown command
+    default: op
+  aurumpvp.misc.setamount:
+    description: Allows set amount command
+    default: op
+  aurumpvp.misc.setcolor:
+    description: Allows set color command
+    default: op
+  aurumpvp.misc.setlore:
+    description: Allows set lore command
+    default: op
+  aurumpvp.misc.setname:
+    description: Allows set name command
+    default: op
+  aurumpvp.misc.setslot:
+    description: Allows set slot command
+    default: op
+  aurumpvp.*:
+    description: Wildcard permission
+    default: op
+    children:
+      aurumpvp.kit.delete: true
+      aurumpvp.kit.give: true
+      aurumpvp.kit.list: true
+      aurumpvp.kit.reload: true
+      aurumpvp.kit.write: true
+      aurumpvp.misc.countdown: true
+      aurumpvp.misc.setamount: true
+      aurumpvp.misc.setcolor: true
+      aurumpvp.misc.setlore: true
+      aurumpvp.misc.setname: true
+      aurumpvp.misc.setslot: true

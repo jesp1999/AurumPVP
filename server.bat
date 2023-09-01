@@ -24,6 +24,6 @@ if not exist plugins\ (
 	cp %PLUGIN_DIR%\%PLUGIN_JAR% ./plugins
 )
 
-:: Gets the name of the spigot jar file and boots 
+:: Gets the name of the spigot jar file and boots
 for /f "tokens=1" %%i in ('ls ^| grep -P "spigot-(([0-9]*)\.)*jar"') do set SPIGOT_JAR=%%i
 java -jar %SPIGOT_JAR% nogui

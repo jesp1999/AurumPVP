@@ -571,7 +571,6 @@ public class Utils {
         materialItemMap.put(Material.GRANITE_WALL, "granite_wall");
         materialItemMap.put(Material.GRASS, "grass");
         materialItemMap.put(Material.GRASS_BLOCK, "grass_block");
-        materialItemMap.put(Material.GRASS_PATH, "grass_path");
         materialItemMap.put(Material.GRAVEL, "gravel");
         materialItemMap.put(Material.GRAY_BANNER, "gray_banner");
         materialItemMap.put(Material.GRAY_BED, "gray_bed");
@@ -772,8 +771,6 @@ public class Utils {
         materialItemMap.put(Material.MYCELIUM, "mycelium");
         materialItemMap.put(Material.NAME_TAG, "name_tag");
         materialItemMap.put(Material.NAUTILUS_SHELL, "nautilus_shell");
-        materialItemMap.put(Material.NETHERITE_BLOCK, "netherite_block");
-        materialItemMap.put(Material.NETHERRACK, "netherrack");
         materialItemMap.put(Material.NETHER_BRICK, "nether_brick");
         materialItemMap.put(Material.NETHER_BRICKS, "nether_bricks");
         materialItemMap.put(Material.NETHER_BRICK_FENCE, "nether_brick_fence");

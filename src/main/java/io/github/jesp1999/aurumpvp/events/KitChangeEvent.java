@@ -1,8 +1,6 @@
 package io.github.jesp1999.aurumpvp.events;
 
 import io.github.jesp1999.aurumpvp.kit.Kit;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -12,7 +10,6 @@ public class KitChangeEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
     private final Kit previousKit;
     private final Kit currentKit;
-    private Location respawnLocation;
 
     public KitChangeEvent(@NotNull final Player player, final Kit previousKit, final Kit currentKit) {
         super(player);
@@ -22,25 +19,21 @@ public class KitChangeEvent extends PlayerEvent {
     }
 
     /**
-     * Gets the current respawn location
+     * Gets the previously equipped kit
      *
-     * @return Location current respawn location
+     * @return Kit previously equipped kit
      */
-    @NotNull
-    public Location getRespawnLocation() {
-        return this.respawnLocation;
+    public Kit getPreviousKit() {
+        return this.previousKit;
     }
 
     /**
-     * Sets the new respawn location
+     * Gets the currently equipped kit
      *
-     * @param respawnLocation new location for the respawn
+     * @return Kit currently equipped kit
      */
-    public void setRespawnLocation(@NotNull Location respawnLocation) {
-        Validate.notNull(respawnLocation, "Respawn location can not be null");
-        Validate.notNull(respawnLocation.getWorld(), "Respawn world can not be null");
-
-        this.respawnLocation = respawnLocation;
+    public Kit getCurrentKit() {
+        return this.currentKit;
     }
 
     @NotNull

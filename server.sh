@@ -29,9 +29,9 @@ then
 	PLUGIN_DIR="../target"
 	PLUGIN_JAR=$(ls $PLUGIN_DIR | grep -P "AurumPVP-[0-9]*(\.[0-9]*)*-SNAPSHOT.jar")
 	mkdir plugins
-	cp $PLUGIN_DIR/$PLUGIN_JAR ./plugins
+	cp $PLUGIN_DIR/$PLUGIN_JAR ./plugins -r
 fi
 
-# Gets the name of the spigot jar file and boots 
+# Gets the name of the spigot jar file and boots
 SPIGOT_JAR=$(ls | grep -P "spigot-(([0-9]*)\.)*jar")
 java -jar $SPIGOT_JAR nogui

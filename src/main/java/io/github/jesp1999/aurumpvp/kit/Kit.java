@@ -1,25 +1,22 @@
 package io.github.jesp1999.aurumpvp.kit;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Logger;
-
-import io.github.jesp1999.aurumpvp.AurumPVP;
+import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 import io.github.jesp1999.aurumpvp.events.KitChangeEvent;
 import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
-import org.bukkit.Effect;
+import io.github.jesp1999.aurumpvp.utils.Utils;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.event.Listener;
-
-import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
-import io.github.jesp1999.aurumpvp.utils.Utils;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.potion.PotionEffect;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Class representing the information associated with a kit pvp kit
@@ -28,13 +25,13 @@ import org.bukkit.plugin.PluginManager;
  */
 public class Kit {
     private static Plugin plugin;
-    public static Map<String, Kit> kits;
+    public static Map<String, Kit> kits = new HashMap<>();
 
     private final String name;
     private final String category;
-    private final List<Effect> effects;
+    private final Set<PotionEffect> potionEffects;
     private final Map<String, ItemStack> inventory;
-    private final List<Listener> listeners;
+    private final Set<Listener> listeners;
 
     
 //    public static Kit ninja, bomber, tactician, hunter, sniper, archer, assassin, scout, medic, marauder;
@@ -91,12 +88,12 @@ public class Kit {
      * @param category KitCategory String identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(String name, String category, Map<String, ItemStack> inventory, List<Listener> listeners, List<Effect> effects) {
+    public Kit(String name, String category, Map<String, ItemStack> inventory, Set<Listener> listeners, Set<PotionEffect> potionEffects) {
         this.name = name;
         this.category = category;
         this.inventory = inventory;
         this.listeners = listeners;
-        this.effects = effects;
+        this.potionEffects = potionEffects;
     }
     
     /**
@@ -105,7 +102,7 @@ public class Kit {
      * @param category KitCategory String identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(String name, String category, PlayerInventory inventory, List<Listener> listeners) {
+    public Kit(String name, String category, PlayerInventory inventory, Set<Listener> listeners, Set<PotionEffect> potionEffects) {
         this.name = name;
         this.category = category;
         HashMap<String, ItemStack> inventoryMap = new HashMap<>();
@@ -137,6 +134,7 @@ public class Kit {
         }
         this.inventory = inventoryMap;
         this.listeners = listeners;
+        this.potionEffects = potionEffects;
     }
     
     /**
@@ -229,5 +227,9 @@ public class Kit {
 
 
         return true; //TODO provide situations where this might be false
+    }
+
+    public Set<PotionEffect> getPotionEffects() {
+        return this.potionEffects;
     }
 }

@@ -19,7 +19,6 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.meta.*;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -228,8 +227,14 @@ public class JSONHandler extends JSONConstants{
                     kitInventory.put(itemSlot, item);
                 }
                 //Format the kit name here so that it can be indexed with the non-formatted kit name
-                final List<Listener> listeners = new LinkedList<Listener>();
-                final Kit kit = new Kit(kitName, kitCategory, kitInventory, listeners, new ArrayList<>());
+                final Set<Listener> listeners = new HashSet<>();
+                final JSONArray potionEffectsJSON = (JSONArray) kitJSON.get(KIT_POTION_EFFECTS);
+                Set<PotionEffect> potionEffects = new HashSet<>();
+                for (Object o : potionEffectsJSON) {
+                    Map<String, Object> potionEffectMap = (Map<String, Object>) o;
+                    potionEffects.add(new PotionEffect(potionEffectMap));
+                }
+                final Kit kit = new Kit(kitName, kitCategory, kitInventory, listeners, potionEffects);
                 kits.put(ChatColor.stripColor(kitName), kit);
             }
 		} catch(IOException e) {
@@ -281,9 +286,13 @@ public class JSONHandler extends JSONConstants{
 			    inventory.add(getItemJSON(entry.getKey(),entry.getValue()));
 			}
 		}
-		kitDetailsMap.put(KIT_INVENTORY, inventory);
-        JSONObject kitDetails = new JSONObject(kitDetailsMap);
-		return kitDetails;
+        kitDetailsMap.put(KIT_INVENTORY, inventory);
+        JSONArray potionEffects = new JSONArray();
+        for(PotionEffect potionEffect : kit.getPotionEffects()) {
+            potionEffects.add(potionEffect.serialize());
+        }
+        kitDetailsMap.put(KIT_POTION_EFFECTS, potionEffects);
+        return new JSONObject(kitDetailsMap);
 	}
 	
 	/**
@@ -344,11 +353,7 @@ public class JSONHandler extends JSONConstants{
 	        final JSONArray customEffects = new JSONArray();
 		    if (((PotionMeta)itemMeta).hasCustomEffects()) {
 		        for (final PotionEffect customEffect : ((PotionMeta) itemMeta).getCustomEffects()) {
-		            String customEffectString = "" + Utils.reversePotionEffectMap.get(customEffect .getType()) + "-" + customEffect.getDuration() + "-" + customEffect.getAmplifier() + "-";
-		            customEffectString += customEffect.isAmbient() ? 1 : 0;
-		            customEffectString += "-" + (customEffect.hasParticles() ? 1 : 0);
-		            customEffectString += "-" + (customEffect.hasIcon() ? 1 : 0);
-		            customEffects.add(customEffectString);
+                    customEffects.add(customEffect.serialize());
 		        }
 		    }
 	        itemDetailsMap.put(ITEM_CUSTOM_EFFECTS, customEffects);

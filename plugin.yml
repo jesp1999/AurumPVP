@@ -1,6 +1,6 @@
 main: io.github.jesp1999.aurumpvp
 name: AurumPVPPlugin
-version: '0.3.3.0'
+version: '0.3.4.0'
 description: AurumPVP Plugin
 load: POSTWORLD
 author: jesp1999

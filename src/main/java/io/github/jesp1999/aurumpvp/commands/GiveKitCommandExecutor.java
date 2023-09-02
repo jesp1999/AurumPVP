@@ -1,6 +1,8 @@
 package io.github.jesp1999.aurumpvp.commands;
 
+import io.github.jesp1999.aurumpvp.events.KitChangeEvent;
 import io.github.jesp1999.aurumpvp.kit.Kit;
+import io.github.jesp1999.aurumpvp.player.PlayerInfo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,6 +24,7 @@ public class GiveKitCommandExecutor implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be run by a player.");
+            return false;
         } else {
             final Player player;
             final String kitName;
@@ -43,6 +46,8 @@ public class GiveKitCommandExecutor implements CommandExecutor {
                     if (equipSuccess) {
                         final String formattedKitName = Kit.kits.get(kitName).getName();
                         sender.sendMessage("Successfully equipped the \"" + formattedKitName + "\" kit!");
+                        PlayerInfo playerInfo = PlayerInfo.activePlayers.get(player.getName());
+                        plugin.getServer().getPluginManager().callEvent(new KitChangeEvent(player, playerInfo.getPreviousKit(), playerInfo.getCurrentKit()));
                         return true;
                     } else {
                         sender.sendMessage("Failed to equip the \"" + kitName + "\" kit!");
@@ -57,6 +62,5 @@ public class GiveKitCommandExecutor implements CommandExecutor {
                 return false;
             }
         }
-        return false;
     }
 }

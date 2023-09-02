@@ -2,20 +2,21 @@ package io.github.jesp1999.aurumpvp.player;
 
 import io.github.jesp1999.aurumpvp.events.KitChangeEvent;
 import io.github.jesp1999.aurumpvp.kit.Kit;
-import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
 import io.github.jesp1999.aurumpvp.utils.Utils;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerInfo {
+    public static Map<String, PlayerInfo> activePlayers = new HashMap<>();
     private final @NotNull Player player;
     private Kit currentKit;
+    private Kit previousKit;
     private static Plugin plugin;
 
     /**
@@ -25,16 +26,19 @@ public class PlayerInfo {
     public PlayerInfo(@NotNull Player player) {
         this.player = player;
         this.currentKit = null;
+        this.previousKit = null;
     }
 
     /**
      *
      * @param player
-     * @param kit
+     * @param currentKit
+     * @param previousKit
      */
-    public PlayerInfo(@NotNull Player player, Kit kit) {
+    public PlayerInfo(@NotNull Player player, Kit currentKit, Kit previousKit) {
         this.player = player;
-        this.currentKit = kit;
+        this.currentKit = currentKit;
+        this.previousKit = previousKit;
     }
 
     /**
@@ -62,9 +66,17 @@ public class PlayerInfo {
 
         KitChangeEvent kitChangeEvent = new KitChangeEvent(player, this.currentKit, kit);
         PlayerInfo.plugin.getServer().getPluginManager().callEvent(kitChangeEvent);
+        this.previousKit = this.currentKit;
         this.currentKit = kit;
 
-
         return true; //TODO provide situations where this might be false
+    }
+
+    public Kit getCurrentKit() {
+        return this.currentKit;
+    }
+
+    public Kit getPreviousKit() {
+        return this.previousKit;
     }
 }

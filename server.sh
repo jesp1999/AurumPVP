@@ -34,4 +34,4 @@ fi
 
 # Gets the name of the spigot jar file and boots
 SPIGOT_JAR=$(ls | grep -P "spigot-(([0-9]*)\.)*jar")
-java -jar $SPIGOT_JAR nogui
+java -Xmx4G -Xms2G -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar $SPIGOT_JAR nogui

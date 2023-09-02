@@ -53,7 +53,7 @@ public class AurumPVP extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("setlore")).setExecutor(new SetLoreCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setname")).setExecutor(new SetNameCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setslot")).setExecutor(new SetSlotCommandExecutor(this));
-        Objects.requireNonNull(this.getCommand("writekit")).setExecutor(new ReloadKitsCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("writekit")).setExecutor(new WriteKitCommandExecutor(this));
 
 	}
 

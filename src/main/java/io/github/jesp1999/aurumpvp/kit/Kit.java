@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
@@ -221,6 +222,10 @@ public class Kit {
         playerInventory.setLeggings(this.inventory.getOrDefault("armor.legs", null));
         playerInventory.setBoots(this.inventory.getOrDefault("armor.feet", null));
         playerInventory.setItemInOffHand(this.inventory.getOrDefault("weapon.offhand", null));
+        for (PotionEffect effect : player.getActivePotionEffects())
+            player.removePotionEffect(effect.getType());
+        for (PotionEffect effect : potionEffects)
+            player.addPotionEffect(effect);
 
         KitChangeEvent kitChangeEvent = new KitChangeEvent(player,null, this);
         Kit.plugin.getServer().getPluginManager().callEvent(kitChangeEvent);

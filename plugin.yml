@@ -76,6 +76,13 @@ commands:
     permission: aurumpvp.misc.setname
     permission-message: You do not have permission!
     usage: /<command>
+  setrestock:
+    description: Sets the restock information for an item in a specified slot as part of a kit
+    aliases:
+      - sr
+    permission: aurumpvp.misc.setrestock
+    permission-message: You do not have permission!
+    usage: /<command>
   setslot:
     description: Sets the slot of the currently held item
     aliases:

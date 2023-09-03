@@ -1,31 +1,17 @@
 package io.github.jesp1999.aurumpvp;
 
 import io.github.jesp1999.aurumpvp.commands.*;
-import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
+import io.github.jesp1999.aurumpvp.confighandler.JSONConstants;
+import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
+import io.github.jesp1999.aurumpvp.kit.Kit;
 import io.github.jesp1999.aurumpvp.player.PlayerEventListener;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.*;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-
-import io.github.jesp1999.aurumpvp.kit.Kit;
-import io.github.jesp1999.aurumpvp.utils.Utils;
-import io.github.jesp1999.aurumpvp.confighandler.JSONConstants;
-import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
-import org.jetbrains.annotations.NotNull;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public class AurumPVP extends JavaPlugin {
     private final List<Listener> listeners = new LinkedList<>();
@@ -44,10 +30,11 @@ public class AurumPVP extends JavaPlugin {
 		    getLogger().info("Kit initialization unsuccessful, see error details above.");
 		}
         Kit.setPlugin(this);
-		listeners.add(new PlayerEventListener());
+		listeners.add(new PlayerEventListener(this));
 		for (Listener listener : listeners)
 			getServer().getPluginManager().registerEvents(listener, this);
         Objects.requireNonNull(this.getCommand("countdown")).setExecutor(new CountdownCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("clearkit")).setExecutor(new ClearKitCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("deletekit")).setExecutor(new DeleteKitCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("givekit")).setExecutor(new GiveKitCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("listkits")).setExecutor(new ListKitsCommandExecutor(this));
@@ -56,6 +43,7 @@ public class AurumPVP extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("setcolor")).setExecutor(new SetColorCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setlore")).setExecutor(new SetLoreCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setname")).setExecutor(new SetNameCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("setrestock")).setExecutor(new SetRestockCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setslot")).setExecutor(new SetSlotCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("writekit")).setExecutor(new WriteKitCommandExecutor(this));
 

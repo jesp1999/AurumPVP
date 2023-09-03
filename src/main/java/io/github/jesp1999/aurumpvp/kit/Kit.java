@@ -1,15 +1,17 @@
 package io.github.jesp1999.aurumpvp.kit;
 
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
+import io.github.jesp1999.aurumpvp.events.ItemRestockEvent;
 import io.github.jesp1999.aurumpvp.events.KitChangeEvent;
 import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
+import io.github.jesp1999.aurumpvp.player.PlayerInfo;
+import io.github.jesp1999.aurumpvp.player.RestockInformation;
 import io.github.jesp1999.aurumpvp.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
@@ -30,9 +32,10 @@ public class Kit {
 
     private final String name;
     private final String category;
-    private final Set<PotionEffect> potionEffects;
     private final Map<String, ItemStack> inventory;
+    private final Map<String, RestockInformation> restockInformationMap;
     private final Set<Listener> listeners;
+    private final Set<PotionEffect> potionEffects;
 
     
 //    public static Kit ninja, bomber, tactician, hunter, sniper, archer, assassin, scout, medic, marauder;
@@ -89,10 +92,11 @@ public class Kit {
      * @param category KitCategory String identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(String name, String category, Map<String, ItemStack> inventory, Set<Listener> listeners, Set<PotionEffect> potionEffects) {
+    public Kit(String name, String category, Map<String, ItemStack> inventory, Map<String, RestockInformation> restockInformationMap, Set<Listener> listeners, Set<PotionEffect> potionEffects) {
         this.name = name;
         this.category = category;
         this.inventory = inventory;
+        this.restockInformationMap = restockInformationMap;
         this.listeners = listeners;
         this.potionEffects = potionEffects;
     }
@@ -103,7 +107,7 @@ public class Kit {
      * @param category KitCategory String identifier for this kit
      * @param inventory map of the inventory slot names to ItemStack, null if no item in the slot
      */
-    public Kit(String name, String category, PlayerInventory inventory, Set<Listener> listeners, Set<PotionEffect> potionEffects) {
+    public Kit(String name, String category, PlayerInventory inventory, Map<String, RestockInformation> restockInformationMap, Set<Listener> listeners, Set<PotionEffect> potionEffects) {
         this.name = name;
         this.category = category;
         HashMap<String, ItemStack> inventoryMap = new HashMap<>();
@@ -134,6 +138,7 @@ public class Kit {
             }
         }
         this.inventory = inventoryMap;
+        this.restockInformationMap = restockInformationMap;
         this.listeners = listeners;
         this.potionEffects = potionEffects;
     }
@@ -230,11 +235,26 @@ public class Kit {
         KitChangeEvent kitChangeEvent = new KitChangeEvent(player,null, this);
         Kit.plugin.getServer().getPluginManager().callEvent(kitChangeEvent);
 
-
+        // TODO change this to only schedule on GameStartEvent, and to cancel on GameStopEvent
+        PlayerInfo.activePlayers.get(player.getName()).getSlotRestockInformation().clear();
+        for (RestockInformation restockInformation : restockInformationMap.values()) {
+            ItemRestockEvent itemRestockEvent = new ItemRestockEvent(player, restockInformation);
+            Kit.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(
+                    Kit.plugin,
+                    () -> Kit.plugin.getServer().getPluginManager().callEvent(itemRestockEvent),
+                    0,  // delay (ticks)
+                    itemRestockEvent.getRestockInformation().getCooldown()  // period (ticks)
+            );
+        }
+        PlayerInfo.activePlayers.get(player.getName()).setCurrentKit(this);
         return true; //TODO provide situations where this might be false
     }
 
     public Set<PotionEffect> getPotionEffects() {
         return this.potionEffects;
+    }
+
+    public Map<String, RestockInformation> getRestockInformationMap() {
+        return this.restockInformationMap;
     }
 }

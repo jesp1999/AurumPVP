@@ -10,6 +10,7 @@ public abstract class JSONConstants {
 	protected static final String KIT_CATEGORY = "kitCategory";
 	protected static final String KIT_INVENTORY = "inventory";
 	protected static final String KIT_POTION_EFFECTS = "potionEffects";
+	protected static final String KIT_RESTOCK_INFO = "restock";
 	protected static final String ITEM_SLOT = "slot";
 	protected static final String ITEM_NAME = "itemName";
 	protected static final String ITEM_DISPLAY_NAME = "displayName";
@@ -20,12 +21,9 @@ public abstract class JSONConstants {
 	protected static final String ITEM_LORE = "lore";
 	protected static final String ITEM_CUSTOM_EFFECTS = "customEffects";
 	protected static final String ITEM_BANNER_ART = "bannerArt";
-	protected static final String POTION_EFFECT_TYPE = "type";
-	protected static final String POTION_EFFECT_AMPLIFIER = "amplifier";
-	protected static final String POTION_EFFECT_DURATION = "duration";
-	protected static final String POTION_EFFECT_AMBIENT = "ambient";
-	protected static final String POTION_EFFECT_PARTICLES = "particles";
-	protected static final String POTION_EFFECT_ICON = "icon";
+	protected static final String RESTOCK_ITEM_STACK = "restockItemStack";
+	protected static final String RESTOCK_COOLDOWN = "restockCooldown";
+	protected static final String RESTOCK_MAX_STACK_SIZE = "restockMaxStackSize";
     protected static final boolean OVERWRITE_SAME_EFFECT_TYPE = true;
     protected static final boolean EXCEED_ENCHANTMENT_LEVEL_CAP = true;
 }

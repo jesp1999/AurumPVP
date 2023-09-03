@@ -7,17 +7,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerInfo {
     public static Map<String, PlayerInfo> activePlayers = new HashMap<>();
+    private static Plugin plugin;
     private final @NotNull Player player;
     private Kit currentKit;
     private Kit previousKit;
-    private static Plugin plugin;
+    private Map<String, RestockInformation> slotRestockInformation;
 
     /**
      *
@@ -49,34 +52,20 @@ public class PlayerInfo {
         PlayerInfo.plugin = plugin;
     }
 
-    public boolean equipKit(Kit kit) {
-        if (this.player == null) {
-            return false;
-        }
-        final PlayerInventory playerInventory = this.player.getInventory();
-        final Map<String, ItemStack> kitInventory = kit.getInventory();
-        for (final Map.Entry<String, Integer> inventoryEntry : Utils.inventorySlots.entrySet()) {
-            playerInventory.setItem(inventoryEntry.getValue(), kitInventory.getOrDefault(inventoryEntry.getKey(), null));
-        }
-        playerInventory.setHelmet(kitInventory.getOrDefault("armor.head", null));
-        playerInventory.setChestplate(kitInventory.getOrDefault("armor.chest", null));
-        playerInventory.setLeggings(kitInventory.getOrDefault("armor.legs", null));
-        playerInventory.setBoots(kitInventory.getOrDefault("armor.feet", null));
-        playerInventory.setItemInOffHand(kitInventory.getOrDefault("weapon.offhand", null));
-
-        KitChangeEvent kitChangeEvent = new KitChangeEvent(player, this.currentKit, kit);
-        PlayerInfo.plugin.getServer().getPluginManager().callEvent(kitChangeEvent);
-        this.previousKit = this.currentKit;
-        this.currentKit = kit;
-
-        return true; //TODO provide situations where this might be false
-    }
-
     public Kit getCurrentKit() {
         return this.currentKit;
     }
 
+    public void setCurrentKit(Kit currentKit) {
+        this.previousKit = this.currentKit;
+        this.currentKit = currentKit;
+    }
+
     public Kit getPreviousKit() {
         return this.previousKit;
+    }
+
+    public Map<String, RestockInformation> getSlotRestockInformation() {
+        return this.slotRestockInformation;
     }
 }

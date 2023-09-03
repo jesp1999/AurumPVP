@@ -2,6 +2,7 @@ package io.github.jesp1999.aurumpvp.confighandler;
 
 import io.github.jesp1999.aurumpvp.kit.Kit;
 import io.github.jesp1999.aurumpvp.map.MapInfo;
+import io.github.jesp1999.aurumpvp.player.RestockInformation;
 import io.github.jesp1999.aurumpvp.utils.Utils;
 
 import java.util.*;
@@ -45,6 +46,133 @@ public class JSONHandler extends JSONConstants{
 		JSONHandler.pluginManager = pluginManager;
 	}
 
+    public static ItemStack getItemStackFromJSON(Logger logger, JSONObject itemJSON) {
+        //TODO input validate all of this
+        //TODO replace alll "return null" statements with error handling
+        final String itemName = (String) itemJSON.get(ITEM_NAME);
+
+        final Material itemMaterial = Material.matchMaterial(itemName);
+
+        final boolean amountSpecified = itemJSON.containsKey(ITEM_AMOUNT);
+        final ItemStack item;
+        //TODO input validation on amount being numeric
+        if (amountSpecified) {
+            final int itemAmount = Math.toIntExact((long) itemJSON.get(ITEM_AMOUNT));
+            item = new ItemStack(itemMaterial, itemAmount);
+        } else {
+            item = new ItemStack(itemMaterial);
+        }
+
+        final ItemMeta itemMeta = item.getItemMeta();
+
+        final String itemDisplayName;
+        if (itemJSON.containsKey(ITEM_DISPLAY_NAME)) {
+            itemDisplayName = Utils.formatText((String) itemJSON.get(ITEM_DISPLAY_NAME));
+            itemMeta.setDisplayName(itemDisplayName);
+        }
+
+        //TODO input validation on damage being numeric
+        if (itemJSON.containsKey(ITEM_DAMAGE)) {
+            final int itemDamage = Math.toIntExact((long) itemJSON.get(ITEM_DAMAGE));
+            if (itemDamage == -1) {
+                itemMeta.setUnbreakable(true);
+            } else if (itemMeta instanceof Damageable) {
+                ((Damageable) itemMeta).setDamage(itemDamage);
+            }
+        }
+
+        //TODO input validation on color being numeric
+        //TODO allow for non-numeric colors like "purple", "blue" etc
+        if (itemJSON.containsKey(ITEM_COLOR)) {
+            final int itemColor = Math.toIntExact((long) itemJSON.get(ITEM_COLOR));
+            if (itemMeta instanceof LeatherArmorMeta) {
+                ((LeatherArmorMeta) itemMeta).setColor(Color.fromRGB(itemColor));
+            } else if (itemMeta instanceof PotionMeta) {
+                ((PotionMeta) itemMeta).setColor(Color.fromRGB(itemColor));
+            }
+        }
+
+        if (itemJSON.containsKey(ITEM_ENCHANTMENTS)) {
+            final JSONArray enchantmentsJSON = (JSONArray) itemJSON.get(ITEM_ENCHANTMENTS);
+            for (Object value : enchantmentsJSON) {
+                final String enchantString = (String) value;
+                final String[] itemEnchant = enchantString.split(":");
+                final Enchantment itemEnchantment = Utils.enchantmentMap.getOrDefault(itemEnchant[0], null);
+                if (itemEnchantment == null) {
+                    return null;
+                }
+                itemMeta.addEnchant(itemEnchantment, Integer.parseInt(itemEnchant[1]), EXCEED_ENCHANTMENT_LEVEL_CAP);
+            }
+        }
+
+        if (itemJSON.containsKey(ITEM_LORE)) {
+            final JSONArray loreJSON = (JSONArray) itemJSON.get(ITEM_LORE);
+            final ArrayList<String> itemLore = new ArrayList<String>();
+            for (Object value : loreJSON) {
+                itemLore.add(Utils.formatText((String) value));
+            }
+            itemMeta.setLore(itemLore);
+        }
+
+        //TODO add custom effects input validation
+        if (itemJSON.containsKey(ITEM_CUSTOM_EFFECTS)) {
+            final JSONArray customEffectsJSON = (JSONArray) itemJSON.get(ITEM_CUSTOM_EFFECTS);
+            for (Object value : customEffectsJSON) {
+                final String customEffectString = (String) value;
+                final String[] customEffectSplit = customEffectString.split(":");
+                final String customEffectTypeString = customEffectSplit[0];
+                final PotionEffectType customEffectType = Utils.potionEffectMap.getOrDefault(customEffectTypeString, null);
+                if (customEffectType == null) {
+                    return null;
+                }
+                final int customEffectDuration = Integer.parseInt(customEffectSplit[1]);
+                final int customEffectAmplifier = Integer.parseInt(customEffectSplit[2]);
+
+                // Generate the item custom effect meta based on which parameters are specified in the JSON
+                final PotionEffect itemCustomEffect;
+                if (customEffectSplit.length > 3) {
+                    final boolean customEffectAmbient = customEffectSplit[3].equals("1"); // ambient is default false, assume false unless "1" specified to override
+                    if (customEffectSplit.length > 4) {
+                        final boolean customEffectParticle = customEffectSplit[4].equals("0"); // particles is default true, assume true unless "0" specified to override
+                        if (customEffectSplit.length > 5) {
+                            final boolean customEffectIcon = customEffectSplit[5].equals("0"); // icon is default true, assume true unless "0" specified to override
+                            itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient, customEffectParticle, customEffectIcon);
+                        } else {
+                            itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient, customEffectParticle);
+                        }
+                    } else {
+                        itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient);
+                    }
+                } else {
+                    itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier);
+                }
+                ((PotionMeta) itemMeta).addCustomEffect(itemCustomEffect, OVERWRITE_SAME_EFFECT_TYPE);
+            }
+        }
+
+
+        //TODO add banner pattern input validation
+        if (itemJSON.containsKey(ITEM_BANNER_ART)) {
+            if (itemMeta instanceof BlockStateMeta) {
+                final BlockState blockState = ((BlockStateMeta) itemMeta).getBlockState();
+                if (blockState instanceof Banner) {
+                    final JSONArray bannerArtJSON = (JSONArray) itemJSON.get(ITEM_BANNER_ART);
+                    for (Object value : bannerArtJSON) {
+                        final JSONObject bannerPatternJSON = (JSONObject) value;
+                        final DyeColor bannerPatternColor = DyeColor.getByColor(Color.fromRGB((int) bannerPatternJSON.get("pattern")));
+                        final PatternType bannerPatternType = PatternType.getByIdentifier((String) bannerPatternJSON.get("type"));
+                        Pattern bannerPattern = new Pattern(bannerPatternColor, bannerPatternType);
+                        ((Banner) blockState).addPattern(bannerPattern);
+                    }
+                    ((BlockStateMeta) itemMeta).setBlockState(blockState);
+                }
+            }
+        }
+
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
 	/**
 	 * Takes JSON file of kits and translates it to Java objects
 	 * @param kitConfigFile The kits.json config file
@@ -58,6 +186,7 @@ public class JSONHandler extends JSONConstants{
 			    //TODO populate the kits file with a default kit list maybe?
 				kitConfigFile.getParentFile().mkdirs();
 				final FileWriter writer = new FileWriter(kitConfigFile);
+                writer.write("[]");
 				writer.flush();
 				writer.close();
 				return kits;
@@ -83,148 +212,8 @@ public class JSONHandler extends JSONConstants{
                 final Map<String, ItemStack> kitInventory = new HashMap<>();
                 for (Object o : inventoryJSON) {
                     final JSONObject itemJSON = (JSONObject) o;
-
-                    if (!itemJSON.containsKey(ITEM_NAME)) {
-                        logger.log(Level.WARNING, "Encountered item with unspecified " + ITEM_NAME + " in kit named \"" + kitName + "\". Skipping this item..");
-                        continue;
-                    } else if (!itemJSON.containsKey(ITEM_SLOT)) {
-                        logger.log(Level.WARNING, "Encountered item named \"" + itemJSON.get(ITEM_NAME) + "\" with unspecified " + ITEM_SLOT + " in kit named \"" + kitName + "\". Skipping this item..");
-                        continue;
-                    }
-
                     final String itemSlot = (String) itemJSON.get(ITEM_SLOT);
-                    final String itemName = (String) itemJSON.get(ITEM_NAME);
-
-                    if (itemName == null) {
-                        logger.log(Level.WARNING, "Encountered null item in kit named \"" + kitName + "\". Skipping this item..");
-                        continue;
-                    }
-                    final Material itemMaterial = Material.matchMaterial(itemName);
-                    if (itemMaterial == null) {
-                        logger.log(Level.WARNING, "Encountered invalid item name \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this item..");
-                        continue;
-                    }
-
-                    final boolean amountSpecified = itemJSON.containsKey(ITEM_AMOUNT);
-                    final ItemStack item;
-                    //TODO input validation on amount being numeric
-                    if (amountSpecified) {
-                        final int itemAmount = Math.toIntExact((long) itemJSON.get(ITEM_AMOUNT));
-                        item = new ItemStack(itemMaterial, itemAmount);
-                    } else {
-                        item = new ItemStack(itemMaterial);
-                    }
-
-                    final ItemMeta itemMeta = item.getItemMeta();
-
-                    final String itemDisplayName;
-                    if (itemJSON.containsKey(ITEM_DISPLAY_NAME)) {
-                        itemDisplayName = Utils.formatText((String) itemJSON.get(ITEM_DISPLAY_NAME));
-                        itemMeta.setDisplayName(itemDisplayName);
-                    }
-
-                    //TODO input validation on damage being numeric
-                    if (itemJSON.containsKey(ITEM_DAMAGE)) {
-                        final int itemDamage = Math.toIntExact((long) itemJSON.get(ITEM_DAMAGE));
-                        if (itemDamage == -1) {
-                            itemMeta.setUnbreakable(true);
-                        } else if (itemMeta instanceof Damageable) {
-                            ((Damageable) itemMeta).setDamage(itemDamage);
-                        }
-                    }
-
-                    //TODO input validation on color being numeric
-                    //TODO allow for non-numeric colors like "purple", "blue" etc
-                    if (itemJSON.containsKey(ITEM_COLOR)) {
-                        final int itemColor = Math.toIntExact((long) itemJSON.get(ITEM_COLOR));
-                        if (itemMeta instanceof LeatherArmorMeta) {
-                            ((LeatherArmorMeta) itemMeta).setColor(Color.fromRGB(itemColor));
-                        } else if (itemMeta instanceof PotionMeta) {
-                            ((PotionMeta) itemMeta).setColor(Color.fromRGB(itemColor));
-                        }
-                    }
-
-                    if (itemJSON.containsKey(ITEM_ENCHANTMENTS)) {
-                        final JSONArray enchantmentsJSON = (JSONArray) itemJSON.get(ITEM_ENCHANTMENTS);
-                        for (Object value : enchantmentsJSON) {
-                            final String enchantString = (String) value;
-                            final String[] itemEnchant = enchantString.split(":");
-                            final Enchantment itemEnchantment = Utils.enchantmentMap.getOrDefault(itemEnchant[0], null);
-                            if (itemEnchantment == null) {
-                                logger.log(Level.WARNING, "Encountered invalid enchantment name in entry \"" + enchantString + "\" of item \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this enchantment entry..");
-                                continue;
-                            }
-                            itemMeta.addEnchant(itemEnchantment, Integer.parseInt(itemEnchant[1]), EXCEED_ENCHANTMENT_LEVEL_CAP);
-                        }
-                    }
-
-                    if (itemJSON.containsKey(ITEM_LORE)) {
-                        final JSONArray loreJSON = (JSONArray) itemJSON.get(ITEM_LORE);
-                        final ArrayList<String> itemLore = new ArrayList<String>();
-                        for (Object value : loreJSON) {
-                            itemLore.add(Utils.formatText((String) value));
-                        }
-                        itemMeta.setLore(itemLore);
-                    }
-
-                    //TODO add custom effects input validation
-                    if (itemJSON.containsKey(ITEM_CUSTOM_EFFECTS)) {
-                        final JSONArray customEffectsJSON = (JSONArray) itemJSON.get(ITEM_CUSTOM_EFFECTS);
-                        for (Object value : customEffectsJSON) {
-                            final String customEffectString = (String) value;
-                            final String[] customEffectSplit = customEffectString.split(":");
-                            final String customEffectTypeString = customEffectSplit[0];
-                            final PotionEffectType customEffectType = Utils.potionEffectMap.getOrDefault(customEffectTypeString, null);
-                            if (customEffectType == null) {
-                                logger.log(Level.WARNING, "Encountered invalid customEffect type in entry \"" + customEffectString + "\" of item \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this customEffect entry..");
-                                continue;
-                            }
-                            final int customEffectDuration = Integer.parseInt(customEffectSplit[1]);
-                            final int customEffectAmplifier = Integer.parseInt(customEffectSplit[2]);
-
-                            // Generate the item custom effect meta based on which parameters are specified in the JSON
-                            final PotionEffect itemCustomEffect;
-                            if (customEffectSplit.length > 3) {
-                                final boolean customEffectAmbient = customEffectSplit[3].equals("1"); // ambient is default false, assume false unless "1" specified to override
-                                if (customEffectSplit.length > 4) {
-                                    final boolean customEffectParticle = customEffectSplit[4].equals("0"); // particles is default true, assume true unless "0" specified to override
-                                    if (customEffectSplit.length > 5) {
-                                        final boolean customEffectIcon = customEffectSplit[5].equals("0"); // icon is default true, assume true unless "0" specified to override
-                                        itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient, customEffectParticle, customEffectIcon);
-                                    } else {
-                                        itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient, customEffectParticle);
-                                    }
-                                } else {
-                                    itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier, customEffectAmbient);
-                                }
-                            } else {
-                                itemCustomEffect = new PotionEffect(customEffectType, customEffectDuration, customEffectAmplifier);
-                            }
-                            ((PotionMeta) itemMeta).addCustomEffect(itemCustomEffect, OVERWRITE_SAME_EFFECT_TYPE);
-                        }
-                    }
-
-
-                    //TODO add banner pattern input validation
-                    if (itemJSON.containsKey(ITEM_BANNER_ART)) {
-                        if (itemMeta instanceof BlockStateMeta) {
-                            final BlockState blockState = ((BlockStateMeta) itemMeta).getBlockState();
-                            if (blockState instanceof Banner) {
-                                final JSONArray bannerArtJSON = (JSONArray) itemJSON.get(ITEM_BANNER_ART);
-                                for (Object value : bannerArtJSON) {
-                                    final JSONObject bannerPatternJSON = (JSONObject) value;
-                                    final DyeColor bannerPatternColor = DyeColor.getByColor(Color.fromRGB((int) bannerPatternJSON.get("pattern")));
-                                    final PatternType bannerPatternType = PatternType.getByIdentifier((String) bannerPatternJSON.get("type"));
-                                    Pattern bannerPattern = new Pattern(bannerPatternColor, bannerPatternType);
-                                    ((Banner) blockState).addPattern(bannerPattern);
-                                }
-                                ((BlockStateMeta) itemMeta).setBlockState(blockState);
-                            }
-                        }
-                    }
-
-                    item.setItemMeta(itemMeta);
-                    kitInventory.put(itemSlot, item);
+                    kitInventory.put(itemSlot, getItemStackFromJSON(logger, itemJSON));
                 }
                 //Format the kit name here so that it can be indexed with the non-formatted kit name
                 final Set<Listener> listeners = new HashSet<>();
@@ -262,7 +251,20 @@ public class JSONHandler extends JSONConstants{
                     }
                     potionEffects.add(potionEffect);
                 }
-                final Kit kit = new Kit(kitName, kitCategory, kitInventory, listeners, potionEffects);
+                HashMap<String, RestockInformation> restockInformationMap = new HashMap<>();
+                JSONArray restockInfoJSON = (JSONArray) kitJSON.get(KIT_RESTOCK_INFO);
+                for (Object o : restockInfoJSON) {
+                    final JSONObject restockItemJSON = (JSONObject) o;
+                    String slot = (String)((JSONObject)restockItemJSON.get(RESTOCK_ITEM_STACK)).get(ITEM_SLOT);
+                    int cooldown = Integer.parseInt((String)restockItemJSON.get(RESTOCK_COOLDOWN));
+                    int maxStackSize = Integer.parseInt((String)restockItemJSON.get(RESTOCK_MAX_STACK_SIZE));
+                    restockInformationMap.put(
+                        slot, new RestockInformation(
+                                slot, getItemStackFromJSON(logger, restockItemJSON), cooldown, maxStackSize
+                            )
+                    );
+                }
+                final Kit kit = new Kit(kitName, kitCategory, kitInventory, restockInformationMap, listeners, potionEffects);
                 kits.put(ChatColor.stripColor(kitName), kit);
             }
 		} catch(IOException e) {
@@ -324,6 +326,15 @@ public class JSONHandler extends JSONConstants{
             potionEffects.add(potionEffectString);
         }
         kitDetailsMap.put(KIT_POTION_EFFECTS, potionEffects);
+        JSONArray restockInfo = new JSONArray();
+        for(Map.Entry<String, RestockInformation> entry : kit.getRestockInformationMap().entrySet()) {
+            final Map<Object, Object> restockInfoMap = new HashMap<>();
+            restockInfoMap.put(RESTOCK_ITEM_STACK, getItemJSON(entry.getValue().getSlot(), entry.getValue().getItemStack()));
+            restockInfoMap.put(RESTOCK_COOLDOWN, entry.getValue().getCooldown());
+            restockInfoMap.put(RESTOCK_MAX_STACK_SIZE, entry.getValue().getMaxStackSize());
+            restockInfo.add(new JSONObject(restockInfoMap));
+        }
+        kitDetailsMap.put(KIT_RESTOCK_INFO, restockInfo);
         return new JSONObject(kitDetailsMap);
 	}
 	

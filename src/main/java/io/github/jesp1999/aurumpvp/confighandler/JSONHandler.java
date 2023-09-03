@@ -19,7 +19,6 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.meta.*;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -147,9 +146,9 @@ public class JSONHandler extends JSONConstants{
 
                     if (itemJSON.containsKey(ITEM_ENCHANTMENTS)) {
                         final JSONArray enchantmentsJSON = (JSONArray) itemJSON.get(ITEM_ENCHANTMENTS);
-                        for (int k = 0; k < enchantmentsJSON.size(); k++) {
-                            final String enchantString = (String) enchantmentsJSON.get(k);
-                            final String[] itemEnchant = enchantString.split("-");
+                        for (Object value : enchantmentsJSON) {
+                            final String enchantString = (String) value;
+                            final String[] itemEnchant = enchantString.split(":");
                             final Enchantment itemEnchantment = Utils.enchantmentMap.getOrDefault(itemEnchant[0], null);
                             if (itemEnchantment == null) {
                                 logger.log(Level.WARNING, "Encountered invalid enchantment name in entry \"" + enchantString + "\" of item \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this enchantment entry..");
@@ -173,11 +172,11 @@ public class JSONHandler extends JSONConstants{
                         final JSONArray customEffectsJSON = (JSONArray) itemJSON.get(ITEM_CUSTOM_EFFECTS);
                         for (Object value : customEffectsJSON) {
                             final String customEffectString = (String) value;
-                            final String[] customEffectSplit = customEffectString.split("-");
+                            final String[] customEffectSplit = customEffectString.split(":");
                             final String customEffectTypeString = customEffectSplit[0];
                             final PotionEffectType customEffectType = Utils.potionEffectMap.getOrDefault(customEffectTypeString, null);
                             if (customEffectType == null) {
-                                logger.log(Level.WARNING, "Encountered invalid customEffect type in entry \"" + customEffectString + "\" of item \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this enchantment entry..");
+                                logger.log(Level.WARNING, "Encountered invalid customEffect type in entry \"" + customEffectString + "\" of item \"" + itemName + "\" in kit named \"" + kitName + "\". Skipping this customEffect entry..");
                                 continue;
                             }
                             final int customEffectDuration = Integer.parseInt(customEffectSplit[1]);
@@ -228,8 +227,42 @@ public class JSONHandler extends JSONConstants{
                     kitInventory.put(itemSlot, item);
                 }
                 //Format the kit name here so that it can be indexed with the non-formatted kit name
-                final List<Listener> listeners = new LinkedList<Listener>();
-                final Kit kit = new Kit(kitName, kitCategory, kitInventory, listeners, new ArrayList<>());
+                final Set<Listener> listeners = new HashSet<>();
+                final JSONArray potionEffectsJSON = (JSONArray) kitJSON.get(KIT_POTION_EFFECTS);
+                Set<PotionEffect> potionEffects = new HashSet<>();
+                for (Object o : potionEffectsJSON) {
+                    final String potionEffectString = (String) o;
+                    final String[] potionEffectSplit = potionEffectString.split(":");
+                    final String customEffectTypeString = potionEffectSplit[0];
+                    final PotionEffectType potionEffectType = Utils.potionEffectMap.getOrDefault(customEffectTypeString, null);
+                    if (potionEffectType == null) {
+                        logger.log(Level.WARNING, "Encountered invalid potionEffect type in entry \"" + potionEffectString + "\" of for kit named \"" + kitName + "\". Skipping this potion effect entry..");
+                        continue;
+                    }
+                    final int potionEffectDuration = Integer.parseInt(potionEffectSplit[1]);
+                    final int potionEffectAmplifier = Integer.parseInt(potionEffectSplit[2]);
+
+                    // Generate the item custom effect meta based on which parameters are specified in the JSON
+                    final PotionEffect potionEffect;
+                    if (potionEffectSplit.length > 3) {
+                        final boolean potionEffectAmbient = potionEffectSplit[3].equals("1"); // ambient is default false, assume false unless "1" specified to override
+                        if (potionEffectSplit.length > 4) {
+                            final boolean potionEffectParticle = potionEffectSplit[4].equals("0"); // particles is default true, assume true unless "0" specified to override
+                            if (potionEffectSplit.length > 5) {
+                                final boolean potionEffectIcon = potionEffectSplit[5].equals("0"); // icon is default true, assume true unless "0" specified to override
+                                potionEffect = new PotionEffect(potionEffectType, potionEffectDuration, potionEffectAmplifier, potionEffectAmbient, potionEffectParticle, potionEffectIcon);
+                            } else {
+                                potionEffect = new PotionEffect(potionEffectType, potionEffectDuration, potionEffectAmplifier, potionEffectAmbient, potionEffectParticle);
+                            }
+                        } else {
+                            potionEffect = new PotionEffect(potionEffectType, potionEffectDuration, potionEffectAmplifier, potionEffectAmbient);
+                        }
+                    } else {
+                        potionEffect = new PotionEffect(potionEffectType, potionEffectDuration, potionEffectAmplifier);
+                    }
+                    potionEffects.add(potionEffect);
+                }
+                final Kit kit = new Kit(kitName, kitCategory, kitInventory, listeners, potionEffects);
                 kits.put(ChatColor.stripColor(kitName), kit);
             }
 		} catch(IOException e) {
@@ -281,9 +314,17 @@ public class JSONHandler extends JSONConstants{
 			    inventory.add(getItemJSON(entry.getKey(),entry.getValue()));
 			}
 		}
-		kitDetailsMap.put(KIT_INVENTORY, inventory);
-        JSONObject kitDetails = new JSONObject(kitDetailsMap);
-		return kitDetails;
+        kitDetailsMap.put(KIT_INVENTORY, inventory);
+        JSONArray potionEffects = new JSONArray();
+        for(PotionEffect potionEffect : kit.getPotionEffects()) {
+            String potionEffectString = "" + Utils.reversePotionEffectMap.get(potionEffect.getType()) + ":" + potionEffect.getDuration() + ":" + potionEffect.getAmplifier() + ":";
+            potionEffectString += potionEffect.isAmbient() ? 1 : 0;
+            potionEffectString += ":" + (potionEffect.hasParticles() ? 1 : 0);
+            potionEffectString += ":" + (potionEffect.hasIcon() ? 1 : 0);
+            potionEffects.add(potionEffectString);
+        }
+        kitDetailsMap.put(KIT_POTION_EFFECTS, potionEffects);
+        return new JSONObject(kitDetailsMap);
 	}
 	
 	/**
@@ -326,7 +367,7 @@ public class JSONHandler extends JSONConstants{
 		if (itemMeta.hasEnchants()) {
     		final JSONArray enchantments = new JSONArray();
     		for(final Map.Entry<Enchantment, Integer> entry : itemMeta.getEnchants().entrySet()) {
-    			final String enchString = Utils.reverseEnchantmentMap.get(entry.getKey()) + "-" + entry.getValue();
+    			final String enchString = Utils.reverseEnchantmentMap.get(entry.getKey()) + ":" + entry.getValue();
     			enchantments.add(enchString);
     		}
     		itemDetailsMap.put(ITEM_ENCHANTMENTS, enchantments);
@@ -344,11 +385,11 @@ public class JSONHandler extends JSONConstants{
 	        final JSONArray customEffects = new JSONArray();
 		    if (((PotionMeta)itemMeta).hasCustomEffects()) {
 		        for (final PotionEffect customEffect : ((PotionMeta) itemMeta).getCustomEffects()) {
-		            String customEffectString = "" + Utils.reversePotionEffectMap.get(customEffect .getType()) + "-" + customEffect.getDuration() + "-" + customEffect.getAmplifier() + "-";
-		            customEffectString += customEffect.isAmbient() ? 1 : 0;
-		            customEffectString += "-" + (customEffect.hasParticles() ? 1 : 0);
-		            customEffectString += "-" + (customEffect.hasIcon() ? 1 : 0);
-		            customEffects.add(customEffectString);
+                    String customEffectString = "" + Utils.reversePotionEffectMap.get(customEffect .getType()) + ":" + customEffect.getDuration() + ":" + customEffect.getAmplifier() + ":";
+                    customEffectString += customEffect.isAmbient() ? 1 : 0;
+                    customEffectString += ":" + (customEffect.hasParticles() ? 1 : 0);
+                    customEffectString += ":" + (customEffect.hasIcon() ? 1 : 0);
+                    customEffects.add(customEffectString);
 		        }
 		    }
 	        itemDetailsMap.put(ITEM_CUSTOM_EFFECTS, customEffects);

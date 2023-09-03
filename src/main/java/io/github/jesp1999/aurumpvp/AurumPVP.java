@@ -2,6 +2,7 @@ package io.github.jesp1999.aurumpvp;
 
 import io.github.jesp1999.aurumpvp.commands.*;
 import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
+import io.github.jesp1999.aurumpvp.player.PlayerEventListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,6 +44,9 @@ public class AurumPVP extends JavaPlugin {
 		    getLogger().info("Kit initialization unsuccessful, see error details above.");
 		}
         Kit.setPlugin(this);
+		listeners.add(new PlayerEventListener());
+		for (Listener listener : listeners)
+			getServer().getPluginManager().registerEvents(listener, this);
         Objects.requireNonNull(this.getCommand("countdown")).setExecutor(new CountdownCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("deletekit")).setExecutor(new DeleteKitCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("givekit")).setExecutor(new GiveKitCommandExecutor(this));
@@ -53,7 +57,7 @@ public class AurumPVP extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("setlore")).setExecutor(new SetLoreCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setname")).setExecutor(new SetNameCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setslot")).setExecutor(new SetSlotCommandExecutor(this));
-        Objects.requireNonNull(this.getCommand("writekit")).setExecutor(new ReloadKitsCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("writekit")).setExecutor(new WriteKitCommandExecutor(this));
 
 	}
 

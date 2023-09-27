@@ -2,20 +2,24 @@ package io.github.jesp1999.aurumpvp.listeners;
 
 import io.github.jesp1999.aurumpvp.events.GameStartEvent;
 import io.github.jesp1999.aurumpvp.events.GameStopEvent;
+import io.github.jesp1999.aurumpvp.game.GameStartCountdownRunnable;
 import io.github.jesp1999.aurumpvp.game.Game;
 import io.github.jesp1999.aurumpvp.game.Participant;
 import io.github.jesp1999.aurumpvp.kit.Kit;
 import io.github.jesp1999.aurumpvp.player.PlayerInfo;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +53,7 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
-    public void onGreenWoolHold(PlayerItemHeldEvent event) {
+    public void onStartGameItemHold(PlayerItemHeldEvent event) {
         if (event.getNewSlot() != 8)
             return;
         Player player = event.getPlayer();
@@ -59,13 +63,13 @@ public class GameListener implements Listener {
             return;
         }
         World world = player.getWorld();
-        Game game = tryStartGame(world);
+        Game game = tryStartGame(world, event);
         if (game != null) {
             plugin.getServer().getPluginManager().callEvent(new GameStartEvent(game));
         }
     }
 
-    public Game tryStartGame(World world) {
+    public Game tryStartGame(World world, PlayerItemHeldEvent triggeringEvent) {
         List<Player> playersInWorld = world.getPlayers();
         List<Player> eligiblePlayers = playersInWorld.stream().filter((p) -> {
             ItemStack item = p.getInventory().getItem(8);
@@ -73,14 +77,29 @@ public class GameListener implements Listener {
         }).collect(Collectors.toList());
         Map<String, Participant> participants = new HashMap<>();
         for (Player player : eligiblePlayers) {
-
-            if (player.getInventory().getHeldItemSlot() == 8) {
+            if (triggeringEvent.getPlayer().equals(player)) {
+                participants.put(player.getName(), new Participant(player));
+            } else if (player.getInventory().getHeldItemSlot() == 8) {
                 participants.put(player.getName(), new Participant(player));
             } else {
                 return null; // not all players ready
             }
         }
         return new Game(world, participants);
+    }
+
+    @EventHandler
+    public void onLeaveGameItemDrop(PlayerDropItemEvent event) {
+        if (Game.activeGame != null) {
+            String playerName = event.getPlayer().getName();
+            PlayerInfo.activePlayers.get(playerName).setCurrentKit(null);
+            Game.activeGame.getParticipants().remove(playerName);
+            if (Game.activeGame.getParticipants().isEmpty()) {
+                plugin.getServer().getPluginManager().callEvent(new GameStopEvent(Game.activeGame));
+            }
+        } else {
+            Bukkit.broadcastMessage("no active game");
+        }
     }
 
     @EventHandler
@@ -94,11 +113,9 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onGameStart(GameStartEvent event) {
-        event.getGame().getParticipants().values().forEach((p) -> {
-            Player player = p.getPlayer();
-            PlayerInfo.activePlayers.get(player.getName()).setPacifist(false);
-            player.getInventory().setItem(8, new ItemStack(Game.LEAVE_GAME_ITEM));
-        });
+        event.getGame().getParticipants().forEach((k, v) -> v.getPlayer().getInventory().setItem(8, null));
+        GameStartCountdownRunnable gameStartCountdownRunnable = new GameStartCountdownRunnable(this.plugin, 10, event);
+        gameStartCountdownRunnable.runTaskTimer(plugin, 0, 20);
     }
 
     @EventHandler

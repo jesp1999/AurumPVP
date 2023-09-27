@@ -10,8 +10,8 @@ import java.util.*;
 
 public class Game {
     public static Game activeGame;
-    public static final ItemStack START_GAME_ITEM;
-    public static final ItemStack LEAVE_GAME_ITEM;
+    public static ItemStack START_GAME_ITEM;
+    public static ItemStack LEAVE_GAME_ITEM;
 
     static {
         /*
@@ -24,14 +24,14 @@ public class Game {
         specific painting nbt
          */
         START_GAME_ITEM = new ItemStack(Material.LIME_WOOL);
-        ItemMeta startGameItemMeta = START_GAME_ITEM.hasItemMeta() ? START_GAME_ITEM.getItemMeta() : Bukkit.getItemFactory().getItemMeta(START_GAME_ITEM.getType());
-        Objects.requireNonNull(START_GAME_ITEM.getItemMeta()).setDisplayName("Hold to Start Game");
-        Objects.requireNonNull(START_GAME_ITEM.getItemMeta()).setLocalizedName("Hold to Start Game");
+        ItemMeta startGameItemMeta = START_GAME_ITEM.getItemMeta();
+        Objects.requireNonNull(startGameItemMeta).setDisplayName("Hold to Start Game");
+        Objects.requireNonNull(startGameItemMeta).setLocalizedName("Hold to Start Game");
         START_GAME_ITEM.setItemMeta(startGameItemMeta);
         LEAVE_GAME_ITEM = new ItemStack(Material.RED_WOOL);
-        ItemMeta leaveGameItemMeta = LEAVE_GAME_ITEM.hasItemMeta() ? LEAVE_GAME_ITEM.getItemMeta() : Bukkit.getItemFactory().getItemMeta(LEAVE_GAME_ITEM.getType());
-        Objects.requireNonNull(LEAVE_GAME_ITEM.getItemMeta()).setDisplayName("Drop to Leave Game");
-        Objects.requireNonNull(LEAVE_GAME_ITEM.getItemMeta()).setLocalizedName("Drop to Leave Game");
+        ItemMeta leaveGameItemMeta = LEAVE_GAME_ITEM.getItemMeta();
+        Objects.requireNonNull(leaveGameItemMeta).setDisplayName("Drop to Leave Game");
+        Objects.requireNonNull(leaveGameItemMeta).setLocalizedName("Drop to Leave Game");
         LEAVE_GAME_ITEM.setItemMeta(leaveGameItemMeta);
     }
 

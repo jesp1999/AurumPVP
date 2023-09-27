@@ -3,6 +3,7 @@ package io.github.jesp1999.aurumpvp.kit;
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 import io.github.jesp1999.aurumpvp.events.ItemRestockEvent;
 import io.github.jesp1999.aurumpvp.events.KitChangeEvent;
+import io.github.jesp1999.aurumpvp.game.Game;
 import io.github.jesp1999.aurumpvp.listeners.PassiveEffectListener;
 import io.github.jesp1999.aurumpvp.player.PlayerInfo;
 import io.github.jesp1999.aurumpvp.player.RestockInformation;
@@ -125,7 +126,7 @@ public class Kit {
         }
         ItemStack bootsItem = inventory.getBoots();
         if (bootsItem != null) {
-            inventoryMap.put("armor.feet", helmetItem);
+            inventoryMap.put("armor.feet", bootsItem);
         }
         ItemStack offhandItem = inventory.getItemInOffHand();
         if (offhandItem != null) {
@@ -222,6 +223,7 @@ public class Kit {
         for (final Entry<String, Integer> inventoryEntry : Utils.inventorySlots.entrySet()) {
             playerInventory.setItem(inventoryEntry.getValue(), this.inventory.getOrDefault(inventoryEntry.getKey(), null));
         }
+        playerInventory.setItem(8, new ItemStack(Game.START_GAME_ITEM));
         playerInventory.setHelmet(this.inventory.getOrDefault("armor.head", null));
         playerInventory.setChestplate(this.inventory.getOrDefault("armor.chest", null));
         playerInventory.setLeggings(this.inventory.getOrDefault("armor.legs", null));
@@ -236,17 +238,22 @@ public class Kit {
         Kit.plugin.getServer().getPluginManager().callEvent(kitChangeEvent);
 
         // TODO change this to only schedule on GameStartEvent, and to cancel on GameStopEvent
-        PlayerInfo.activePlayers.get(player.getName()).getSlotRestockInformation().clear();
+        PlayerInfo playerInfo = PlayerInfo.activePlayers.get(player.getName());
+        playerInfo.getSlotRestockInformation().clear();
+        for (int taskNumber : playerInfo.getScheduledTasks())
+            plugin.getServer().getScheduler().cancelTask(taskNumber);
+        playerInfo.getScheduledTasks().clear();
         for (RestockInformation restockInformation : restockInformationMap.values()) {
             ItemRestockEvent itemRestockEvent = new ItemRestockEvent(player, restockInformation);
-            Kit.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(
+            int taskNumber = Kit.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(
                     Kit.plugin,
                     () -> Kit.plugin.getServer().getPluginManager().callEvent(itemRestockEvent),
                     0,  // delay (ticks)
                     itemRestockEvent.getRestockInformation().getCooldown()  // period (ticks)
             );
+            playerInfo.getScheduledTasks().add(taskNumber);
         }
-        PlayerInfo.activePlayers.get(player.getName()).setCurrentKit(this);
+        playerInfo.setCurrentKit(this);
         return true; //TODO provide situations where this might be false
     }
 

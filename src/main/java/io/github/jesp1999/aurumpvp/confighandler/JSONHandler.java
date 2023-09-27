@@ -255,12 +255,13 @@ public class JSONHandler extends JSONConstants{
                 JSONArray restockInfoJSON = (JSONArray) kitJSON.get(KIT_RESTOCK_INFO);
                 for (Object o : restockInfoJSON) {
                     final JSONObject restockItemJSON = (JSONObject) o;
-                    String slot = (String)((JSONObject)restockItemJSON.get(RESTOCK_ITEM_STACK)).get(ITEM_SLOT);
-                    int cooldown = Integer.parseInt((String)restockItemJSON.get(RESTOCK_COOLDOWN));
-                    int maxStackSize = Integer.parseInt((String)restockItemJSON.get(RESTOCK_MAX_STACK_SIZE));
+                    final JSONObject restockItemStackJSON = (JSONObject)restockItemJSON.get(RESTOCK_ITEM_STACK);
+                    String slot = (String)restockItemStackJSON.get(ITEM_SLOT);
+                    int cooldown = ((Long)restockItemJSON.get(RESTOCK_COOLDOWN)).intValue();
+                    int maxStackSize = ((Long)restockItemJSON.get(RESTOCK_MAX_STACK_SIZE)).intValue();
                     restockInformationMap.put(
                         slot, new RestockInformation(
-                                slot, getItemStackFromJSON(logger, restockItemJSON), cooldown, maxStackSize
+                                slot, getItemStackFromJSON(logger, restockItemStackJSON), cooldown, maxStackSize
                             )
                     );
                 }

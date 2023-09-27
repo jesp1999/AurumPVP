@@ -5,14 +5,14 @@ import org.bukkit.inventory.ItemStack;
 public class RestockInformation {
     private final String slot;
     private final ItemStack itemStack;
-    private final int maxStackSize;
     private final int cooldown;
+    private final int maxStackSize;
 
-    public RestockInformation(String slot, ItemStack itemStack, int maxStackSize, int cooldown) {
+    public RestockInformation(String slot, ItemStack itemStack, int cooldown, int maxStackSize) {
         this.slot = slot;
         this.itemStack = itemStack;
-        this.maxStackSize = maxStackSize;
         this.cooldown = cooldown;
+        this.maxStackSize = maxStackSize;
     }
 
     public String getSlot() {
@@ -23,11 +23,11 @@ public class RestockInformation {
         return this.itemStack;
     }
 
-    public int getMaxStackSize() {
-        return this.maxStackSize;
-    }
-
     public int getCooldown() {
         return this.cooldown;
+    }
+
+    public int getMaxStackSize() {
+        return this.maxStackSize;
     }
 }

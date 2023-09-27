@@ -1,117 +1,188 @@
-name: AurumPVP
 main: io.github.jesp1999.aurumpvp.AurumPVP
-version: 0.3.2.2
-api-version: 1.16
-
+name: AurumPVP
+version: 0.4.2.0
+api-version: 1.20
+description: AurumPVP Plugin
+load: POSTWORLD
 author: Dhumina, Julian, Ian
+website: jesp1999.github.io
+prefix: AurumPVP
 commands:
   aurumpvp:
     description: Lists information about the AurumPVP plugin
+    aliases:
+      - ap
+      - aurumpvp
     usage: /aurumpvp
     permission: aurumpvp.info
     permission-message: You don't have the permission aurumpvp.info
+  clearkit:
+    description: Clears the player's current kit
+    aliases:
+      - ck
+      - clrkit
+    permission: aurumpvp.kit.clear
+    permission-message: You do not have permission!
+    usage: /<command> <kit>
   countdown:
-    description: This is a demo command.
-    usage: /countdown <numberOfSeconds>
-    permission: aurumpvp.countdown
-    permission-message: You don't have the permission aurumpvp.countdown
+    description: Starts a countdown timer
+    aliases:
+      - cd
+    permission: aurumpvp.misc.countdown
+    permission-message: You do not have permission!
+    usage: /<command>
   deletekit:
-    description: Deletes a kit from the kits.json configuration
-    usage: /deletekit <kit name>
+    description: Deletes a selected kit
+    aliases:
+      - dk
+      - delkit
     permission: aurumpvp.kit.delete
-    permission-message: You don't have the permission aurumpvp.kit.delete
-  dk:
-    description: Deletes a kit from the kits.json configuration
-    usage: /dk <kit name>
-    permission: aurumpvp.kit.delete
-    permission-message: You don't have the permission aurumpvp.kit.delete
+    permission-message: You do not have permission!
+    usage: /<command> <kit>
   givekit:
-    description: Gives player a kit
-    usage: /givekit [player] <kit name>
+    description: Gives the user a selected kit
+    aliases:
+      - gk
+      - getkit
     permission: aurumpvp.kit.give
-    permission-message: You don't have the permission aurumpvp.kit.give
-  gk:
-    description: Gives player a kit
-    usage: /gk [player] <kit name>
-    permission: aurumpvp.kit.give
-    permission-message: You don't have the permission aurumpvp.kit.give
+    permission-message: You do not have permission!
+    usage: /<command> <kit>
   listkits:
-    description: Lists the current kits in the kits.json configuration
-    usage: /listkits
+    description: Lists the available kits
+    aliases:
+      - lk
+      - listkit
     permission: aurumpvp.kit.list
-    permission-message: You don't have the permission aurumpvp.kit.list
-  lk:
-    description: Lists the current kits in the kits.json configuration
-    usage: /lk
-    permission: aurumpvp.kit.list
-    permission-message: You don't have the permission aurumpvp.kit.list
+    permission-message: You do not have permission!
+    usage: /<command>
   reloadkits:
-    description: Reloads kits.
-    usage: /reloadkits
+    description: Reloads the available kits
+    aliases:
+      - rk
+      - relkits
+      - relkit
     permission: aurumpvp.kit.reload
-    permission-message: You don't have the permission aurumpvp.kit.reload
-  rk:
-    description: Reloads kits.
-    usage: /rk
-    permission: aurumpvp.kit.reload
-    permission-message: You don't have the permission aurumpvp.kit.reload
+    permission-message: You do not have permission!
+    usage: /<command>
   setamount:
-    description: Changes the quantity of the item in the main hand.
-    usage: /setamount <number>
-    permission: aurumpvp.inventory.setamount
-    permission-message: You don't have the permission aurumpvp.inventory.setamount
-  sa:
-    description: Changes the quantity of the item in the main hand.
-    usage: /ss <number>
-    permission: aurumpvp.inventory.setamount
-    permission-message: You don't have the permission aurumpvp.inventory.setamount
+    description: Sets the stack size of the currently held item
+    aliases:
+      - setstacksize
+      - sa
+    permission: aurumpvp.misc.setamount
+    permission-message: You do not have permission!
+    usage: /<command>
   setcolor:
-    description: Changes the color of the item in the main hand.
-    usage: /setcolor <hex color>
-    permission: aurumpvp.inventory.setcolor
-    permission-message: You don't have the permission aurumpvp.inventory.setcolor
-  sc:
-    description: Changes the color of the item in the main hand.
-    usage: /sc <hex color>
-    permission: aurumpvp.inventory.setcolor
-    permission-message: You don't have the permission aurumpvp.inventory.setcolor
+    description: Sets the color of the currently held item
+    aliases:
+      - sc
+    permission: aurumpvp.misc.setcolor
+    permission-message: You do not have permission!
+    usage: /<command>
   setlore:
-    description: Changes the lore of the item in the main hand.
-    usage: /setlore <lore>
-    permission: aurumpvp.inventory.setlore
-    permission-message: You don't have the permission aurumpvp.inventory.setlore
-  sl:
-    description: Changes the lore of the item in the main hand.
-    usage: /sl <lore>
-    permission: aurumpvp.inventory.setlore
-    permission-message: You don't have the permission aurumpvp.inventory.setlore
+    description: Sets the lore of the currently held item
+    aliases:
+      - sl
+    permission: aurumpvp.misc.setlore
+    permission-message: You do not have permission!
+    usage: /<command>
   setname:
-    description: Changes the name of the item in the main hand.
-    usage: /setname <name>
-    permission: aurumpvp.inventory.setname
-    permission-message: You don't have the permission aurumpvp.inventory.setname
-  sn:
-    description: Changes the name of the item in the main hand.
-    usage: /sn <name>
-    permission: aurumpvp.inventory.setname
-    permission-message: You don't have the permission aurumpvp.inventory.setname
+    description: Sets the name of the currently held item
+    aliases:
+      - sn
+    permission: aurumpvp.misc.setname
+    permission-message: You do not have permission!
+    usage: /<command>
+  setrestock:
+    description: Sets the restock information for an item in a specified slot as part of a kit
+    aliases:
+      - sr
+    permission: aurumpvp.misc.setrestock
+    permission-message: You do not have permission!
+    usage: /<command>
   setslot:
-    description: Moves the item in your hand into the specified slot
-    usage: /setslot <slot name>
-    permission: aurumpvp.inventory.setslot
-    permission-message: You don't have the permission aurumpvp.setslot
-  ss:
-    description: Moves the item in your hand into the specified slot
-    usage: /ss <slot name>
-    permission: aurumpvp.inventory.setslot
-    permission-message: You don't have the permission aurumpvp.setslot
+    description: Sets the slot of the currently held item
+    aliases:
+      - ss
+    permission: aurumpvp.misc.setslot
+    permission-message: You do not have permission!
+    usage: /<command>
+  setunbreakable:
+    description: Sets the unbreakability of the currently held item
+    aliases:
+      - su
+    permission: aurumpvp.misc.setunbreakable
+    permission-message: You do not have permission!
+    usage: /<command>
   writekit:
-    description: Writes the current player's inventory to a given kit name and category
-    usage: /writekit <kit name> <kit category>
+    description: Deletes a selected kit
+    aliases:
+      - wk
     permission: aurumpvp.kit.write
-    permission-message: You don't have the permission aurumpvp.kit.write
-  wk:
-    description: Writes the current player's inventory to a given kit name and category
-    usage: /wk <kit name> <kit category>
-    permission: aurumpvp.kit.write
-    permission-message: You don't have the permission aurumpvp.kit.write
+    permission-message: You do not have permission!
+    usage: /<command> <kit>
+permissions:
+  aurumpvp.info:
+    description: Allows clear kit command
+    default: op
+  aurumpvp.kit.clear:
+    description: Allows clear kit command
+    default: op
+  aurumpvp.kit.delete:
+    description: Allows delete kit command
+    default: op
+  aurumpvp.kit.give:
+    description: Allows give kit command
+    default: op
+  aurumpvp.kit.list:
+    description: Allows list kits command
+    default: op
+  aurumpvp.kit.reload:
+    description: Allows reload kits command
+    default: op
+  aurumpvp.kit.write:
+    description: Allows write kit command
+    default: op
+  aurumpvp.misc.countdown:
+    description: Allows countdown command
+    default: op
+  aurumpvp.misc.setamount:
+    description: Allows set amount command
+    default: op
+  aurumpvp.misc.setcolor:
+    description: Allows set color command
+    default: op
+  aurumpvp.misc.setlore:
+    description: Allows set lore command
+    default: op
+  aurumpvp.misc.setname:
+    description: Allows set name command
+    default: op
+  aurumpvp.misc.setrestock:
+    description: Allows set restock command
+    default: op
+  aurumpvp.misc.setslot:
+    description: Allows set slot command
+    default: op
+  aurumpvp.misc.setunbreakable:
+    description: Allows set unbreakable command
+    default: op
+  aurumpvp.*:
+    description: Wildcard permission
+    default: op
+    children:
+      aurumpvp.info: true
+      aurumpvp.kit.clear: true
+      aurumpvp.kit.delete: true
+      aurumpvp.kit.give: true
+      aurumpvp.kit.list: true
+      aurumpvp.kit.reload: true
+      aurumpvp.kit.write: true
+      aurumpvp.misc.countdown: true
+      aurumpvp.misc.setamount: true
+      aurumpvp.misc.setcolor: true
+      aurumpvp.misc.setlore: true
+      aurumpvp.misc.setname: true
+      aurumpvp.misc.setrestock: true
+      aurumpvp.misc.setslot: true
+      aurumpvp.misc.setunbreakable: true

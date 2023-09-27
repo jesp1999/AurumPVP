@@ -1,6 +1,8 @@
-package io.github.jesp1999.aurumpvp.player;
+package io.github.jesp1999.aurumpvp.listeners;
 
 import io.github.jesp1999.aurumpvp.events.ItemRestockEvent;
+import io.github.jesp1999.aurumpvp.player.PlayerInfo;
+import io.github.jesp1999.aurumpvp.player.RestockInformation;
 import io.github.jesp1999.aurumpvp.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +40,7 @@ public class PlayerEventListener implements Listener {
         if (currentItemStack == null || !restockInformation.getItemStack().getType().equals(currentItemStack.getType())) {
             Utils.setItemStackAtSlot(player, slot, restockItemStack);
         } else {
-            currentItemStack.setAmount(Math.min(restockItemStack.getMaxStackSize(), currentItemStack.getAmount() + restockItemStack.getAmount()));
+            currentItemStack.setAmount(Math.min(restockInformation.getMaxStackSize(), currentItemStack.getAmount() + restockItemStack.getAmount()));
             Utils.setItemStackAtSlot(player, slot, currentItemStack);
         }
     }

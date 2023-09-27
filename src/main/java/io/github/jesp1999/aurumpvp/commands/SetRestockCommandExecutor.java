@@ -7,14 +7,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-import java.util.Objects;
 
 public class SetRestockCommandExecutor implements CommandExecutor {
     private final JavaPlugin plugin;
@@ -37,11 +32,11 @@ public class SetRestockCommandExecutor implements CommandExecutor {
                 final String slotName = args[0];
                 final int amount = Integer.parseInt(args[1]);
                 final int cooldown = args.length > 2 ? Integer.parseInt(args[2]) : -1;
-                final int maxAmount = args.length > 3 ? Integer.parseInt(args[3]) : -1;
+                final int maxStackSize = args.length > 3 ? Integer.parseInt(args[3]) : -1;
                 try {
                     ItemStack restockStack = Utils.getItemStackAtSlot(player, slotName);
                     restockStack.setAmount(amount);
-                    RestockInformation restockInformation = new RestockInformation(slotName, restockStack, cooldown, maxAmount);
+                    RestockInformation restockInformation = new RestockInformation(slotName, restockStack, cooldown, maxStackSize);
                     PlayerInfo.activePlayers.get(player.getName()).getSlotRestockInformation().put(slotName, restockInformation);
                     sender.sendMessage("The item in the \"" + slotName + "\" slot has been set to restock successfully!");
                     return true;

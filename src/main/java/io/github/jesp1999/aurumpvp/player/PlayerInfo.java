@@ -1,18 +1,14 @@
 package io.github.jesp1999.aurumpvp.player;
 
-import io.github.jesp1999.aurumpvp.events.KitChangeEvent;
 import io.github.jesp1999.aurumpvp.kit.Kit;
-import io.github.jesp1999.aurumpvp.utils.Utils;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class PlayerInfo {
     public static Map<String, PlayerInfo> activePlayers = new HashMap<>();
@@ -20,7 +16,9 @@ public class PlayerInfo {
     private final @NotNull Player player;
     private Kit currentKit;
     private Kit previousKit;
-    private Map<String, RestockInformation> slotRestockInformation;
+    private final Map<String, RestockInformation> slotRestockInformation;
+    private final Set<Integer> scheduledTasks;
+    private boolean pacifist;
 
     /**
      *
@@ -30,18 +28,9 @@ public class PlayerInfo {
         this.player = player;
         this.currentKit = null;
         this.previousKit = null;
-    }
-
-    /**
-     *
-     * @param player
-     * @param currentKit
-     * @param previousKit
-     */
-    public PlayerInfo(@NotNull Player player, Kit currentKit, Kit previousKit) {
-        this.player = player;
-        this.currentKit = currentKit;
-        this.previousKit = previousKit;
+        this.slotRestockInformation = new HashMap<>();
+        this.scheduledTasks = new HashSet<>();
+        this.pacifist = true;
     }
 
     /**
@@ -57,6 +46,7 @@ public class PlayerInfo {
     }
 
     public void setCurrentKit(Kit currentKit) {
+        this.slotRestockInformation.clear();
         this.previousKit = this.currentKit;
         this.currentKit = currentKit;
     }
@@ -67,5 +57,17 @@ public class PlayerInfo {
 
     public Map<String, RestockInformation> getSlotRestockInformation() {
         return this.slotRestockInformation;
+    }
+
+    public Set<Integer> getScheduledTasks() {
+        return this.scheduledTasks;
+    }
+
+    public boolean isPacifist() {
+        return this.pacifist;
+    }
+
+    public void setPacifist(boolean pacifist) {
+        this.pacifist = pacifist;
     }
 }

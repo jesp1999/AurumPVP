@@ -31,11 +31,13 @@ public class SetAmountCommandExecutor implements CommandExecutor {
             } else {
                 final Player player = (Player) sender;
                 final int stackSize = Integer.parseInt(args[0]);
-                if (stackSize < 0 || stackSize > 127) {
-                    sender.sendMessage("The specified amount is too high!");
-                    return false;
+                if (stackSize < 1) { // TODO is this the hard limit?
+                    sender.sendMessage("The specified amount needs to be above 0, setting to the minimum of 1.");
                 }
-                player.getInventory().getItemInMainHand().setAmount(stackSize);
+                if (stackSize > 127) { // TODO is this the hard limit?
+                    sender.sendMessage("The specified amount needs to be below 128, setting to the maximum of 127.");
+                }
+                player.getInventory().getItemInMainHand().setAmount(Math.max(Math.min(stackSize, 127), 1));
                 sender.sendMessage("The amount of the item in the mainhand has been changed to " + args[0] + " successfully!");
                 return true;
             }

@@ -6,6 +6,9 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 public class Utils {
@@ -135,6 +138,28 @@ public class Utils {
         inventorySlots.put("inventory.24", 33);
         inventorySlots.put("inventory.25", 34);
         inventorySlots.put("inventory.26", 35);
+    }
+
+    public static ItemStack getItemStackAtSlot(Player player, String slot) {
+        return switch (slot) {
+            case "armor.head" -> player.getInventory().getHelmet();
+            case "armor.chest" -> player.getInventory().getChestplate();
+            case "armor.legs" -> player.getInventory().getLeggings();
+            case "armor.feet" -> player.getInventory().getBoots();
+            case "weapon.offhand" -> player.getInventory().getItemInOffHand();
+            default -> player.getInventory().getItem(inventorySlots.get(slot));
+        };
+    }
+
+    public static void setItemStackAtSlot(Player player, String slot, ItemStack itemStack) {
+        switch (slot) {
+            case "armor.head" -> player.getInventory().setHelmet(itemStack);
+            case "armor.chest" -> player.getInventory().setChestplate(itemStack);
+            case "armor.legs" -> player.getInventory().setLeggings(itemStack);
+            case "armor.feet" -> player.getInventory().setBoots(itemStack);
+            case "weapon.offhand" -> player.getInventory().setItemInOffHand(itemStack);
+            default -> player.getInventory().setItem(inventorySlots.get(slot), itemStack);
+        };
     }
     
     /**

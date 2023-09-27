@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.jesp1999</groupId>
   <artifactId>AurumPVP</artifactId>
-  <version>0.3.4.0</version>
+  <version>0.4.2.0</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -14,6 +14,7 @@
         <filtering>true</filtering>
         <includes>
           <include>**/*.xml</include>
+          <include>**/*.yml</include>
           <!-- Add more file patterns as needed -->
         </includes>
         <targetPath>${project.build.directory}/classes</targetPath>

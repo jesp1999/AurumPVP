@@ -3,6 +3,8 @@ package io.github.jesp1999.aurumpvp.commands;
 import io.github.jesp1999.aurumpvp.confighandler.JSONConstants;
 import io.github.jesp1999.aurumpvp.confighandler.JSONHandler;
 import io.github.jesp1999.aurumpvp.kit.Kit;
+import io.github.jesp1999.aurumpvp.player.PlayerInfo;
+import io.github.jesp1999.aurumpvp.player.RestockInformation;
 import org.bukkit.Effect;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,10 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WriteKitCommandExecutor implements CommandExecutor {
@@ -40,9 +39,10 @@ public class WriteKitCommandExecutor implements CommandExecutor {
                 final Player player = (Player) sender;
                 final String kitName = args[0];
                 final String kitCategory = args[1];
+                final Map<String, RestockInformation> restockInformationSet = PlayerInfo.activePlayers.get(player.getName()).getSlotRestockInformation();
                 final Set<Listener> listeners = new HashSet<>();
                 final Set<PotionEffect> effects = new HashSet<>(player.getActivePotionEffects());
-                final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory(), listeners, effects);
+                final Kit currentKit = new Kit(kitName, kitCategory, player.getInventory(), restockInformationSet, listeners, effects);
                 Kit.kits.put(kitName, currentKit);
                 JSONHandler.exportKits(new File(plugin.getDataFolder(), JSONConstants.KIT_FILENAME), Kit.kits);
                 final boolean kitsInitialized = Kit.initializeKits(plugin.getLogger(), new File(plugin.getDataFolder(), JSONConstants.KIT_FILENAME));
